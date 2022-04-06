@@ -8,7 +8,6 @@ namespace Domain
         [Required]
         [StringLength(50)]
         public string Name { get; set; }
-        [Range(0, int.MaxValue)]
         public int ParticipantCount { get; set; }
 
         [Required]

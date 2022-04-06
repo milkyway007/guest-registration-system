@@ -12,8 +12,6 @@ namespace Domain
         [StringLength(1000)]
         public string Description { get; set; }
         public IEnumerable<IParticipant> Participants { get; set; }
-
-        [Range(0, int.MaxValue)]
         public int AddressId { get; set; }
     }
 }

@@ -12,6 +12,6 @@ namespace Domain.Interfaces
         DateTime Occurrence { get; set; }
         string Description { get; set; }
         IEnumerable<IParticipant> Participants { get; set; }
-        int AddressId { get; set; }
+        IAddress Address { get; set; }
     }
 }

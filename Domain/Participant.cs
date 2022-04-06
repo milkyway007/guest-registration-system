@@ -6,8 +6,8 @@ namespace Domain
     public abstract class Participant : Entity
     {
         [Required]
-        [EnumDataType(typeof(PaymentMethod))]
-        public object PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
+        public ICollection<EventParticipant> Events { get; set; }
 
         public abstract string Code { get; set; }
         public abstract string Description { get; set; }

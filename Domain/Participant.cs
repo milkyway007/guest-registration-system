@@ -8,8 +8,8 @@ namespace Domain
         [Required]
         public PaymentMethod PaymentMethod { get; set; }
         public ICollection<EventParticipant> Events { get; set; }
-
-        public abstract string Code { get; set; }
-        public abstract string Description { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Code { get; set; }
     }
 }

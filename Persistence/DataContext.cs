@@ -38,6 +38,33 @@ namespace Persistence
             new EventConfiguration().Configure(builder.Entity<Event>());
             new EventParticipantConfiguration().Configure(builder.Entity<EventParticipant>());
             new PersonConfiguration().Configure(builder.Entity<Person>());
+            new ParticipantConfiguration().Configure(builder.Entity<Participant>());
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            AddTimestamps();
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+        public override int SaveChanges()
+        {
+            AddTimestamps();
+
+            return base.SaveChanges();
+        }
+
+        private void AddTimestamps()
+        {
+            foreach (var entity in ChangeTracker.Entries().Where(x => x.Entity is Entity && (x.State == EntityState.Added || x.State == EntityState.Modified)))
+            {
+                if (entity.State == EntityState.Added)
+                {
+                    ((Entity)entity.Entity).Created = DateTime.UtcNow;
+                }
+
+                ((Entity)entity.Entity).Modified = DateTime.UtcNow;
+            }
         }
     }
 }

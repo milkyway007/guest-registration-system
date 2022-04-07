@@ -10,7 +10,6 @@ namespace Domain
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
-
         [StringLength(1500)]
         public string Description { get; set; }
     }

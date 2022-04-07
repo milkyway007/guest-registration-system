@@ -2,11 +2,6 @@
 using Domain;
 using MediatR;
 using Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Events
 {
@@ -28,9 +23,7 @@ namespace Application.Events
 
             public async Task<Result<Event>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var e = await _context.Events.FindAsync(request.Id);
-
-                return Result<Event>.Success(e);
+                return Result<Event>.Success(await _context.Events.FindAsync(request.Id));
             }
         }
     }

@@ -33,7 +33,6 @@ namespace Application.Events
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 _context.Events.Add(request.Event);
-
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result)

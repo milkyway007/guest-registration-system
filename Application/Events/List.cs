@@ -3,8 +3,6 @@ using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using System;
-using System.Collections.Generic;
 namespace Application.Events
 {
     public class List

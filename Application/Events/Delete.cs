@@ -24,7 +24,6 @@ namespace Application.Events
             {
                 var e = await _context.Events.FindAsync(request.Id);
                 _context.Remove(e);
-
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result)

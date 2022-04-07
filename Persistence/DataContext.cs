@@ -47,6 +47,7 @@ namespace Persistence
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
+
         public override int SaveChanges()
         {
             AddTimestamps();

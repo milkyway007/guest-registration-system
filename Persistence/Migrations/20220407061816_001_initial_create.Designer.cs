@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220406145830_001_unique_costraints")]
-    partial class _001_unique_costraints
+    [Migration("20220407061816_001_initial_create")]
+    partial class _001_initial_create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -130,10 +130,6 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(1500)
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("Modified")
                         .HasColumnType("TEXT");
 
@@ -142,12 +138,19 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Participants");
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("participant", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Company", b =>
                 {
                     b.HasBaseType("Domain.Participant");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(5000)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -156,9 +159,6 @@ namespace Persistence.Migrations
 
                     b.Property<int>("ParticipantCount")
                         .HasColumnType("INTEGER");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -170,6 +170,10 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Domain.Participant");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(1500)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -179,9 +183,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
 
                     b.ToTable("persons", (string)null);
                 });

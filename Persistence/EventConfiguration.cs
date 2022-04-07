@@ -11,6 +11,7 @@ namespace Persistence
             builder.ToTable("events");
 
             builder.Property(b => b.Name).IsRequired().HasMaxLength(50);
+            builder.Property(b => b.Occurrence).IsRequired();
             builder.Property(b => b.Description).HasMaxLength(1000);
 
             builder

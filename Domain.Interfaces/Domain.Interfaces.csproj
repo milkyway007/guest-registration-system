@@ -9,7 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Class1.cs" />
+    <Compile Remove="IAddress.cs" />
+    <Compile Remove="ICompany.cs" />
+    <Compile Remove="IEvent.cs" />
+    <Compile Remove="IEventParticipant.cs" />
+    <Compile Remove="IParticipant.cs" />
+    <Compile Remove="IPerson.cs" />
   </ItemGroup>
 
 </Project>

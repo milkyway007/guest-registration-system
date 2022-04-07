@@ -10,10 +10,7 @@
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Domain.Interfaces\Domain.Interfaces.csproj" />
+    <Compile Remove="EventAddress.cs" />
   </ItemGroup>
 
 </Project>

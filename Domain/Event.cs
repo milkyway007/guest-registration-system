@@ -1,9 +1,8 @@
-﻿using Domain.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class Event : Entity, IEvent
+    public class Event : Entity
     {
         [Required]
         [StringLength(50)]
@@ -11,7 +10,9 @@ namespace Domain
         public DateTime Occurrence { get; set; }
         [StringLength(1000)]
         public string Description { get; set; }
-        public IEnumerable<IParticipant> Participants { get; set; }
+        public ICollection<EventParticipant> Participants { get; set; }
+        [Required]
         public int AddressId { get; set; }
+        public Address Address { get; set; }
     }
 }

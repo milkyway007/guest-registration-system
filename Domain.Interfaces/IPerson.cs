@@ -10,9 +10,6 @@ namespace Domain.Interfaces
     {
         string FirstName { get; set; }
         string LastName { get; set; }
-        object PaymentMethod { get; set; }
-
-        string Code { get; set; }
         string Description { get; set; }
     }
 }

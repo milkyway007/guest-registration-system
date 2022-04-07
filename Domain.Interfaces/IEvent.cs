@@ -11,7 +11,7 @@ namespace Domain.Interfaces
         string Name { get; set; }
         DateTime Occurrence { get; set; }
         string Description { get; set; }
-        IEnumerable<IParticipant> Participants { get; set; }
-        int AddressId { get; set; }
+        ICollection<IEventParticipant> Participants { get; set; }
+        IAddress Address { get; set; }
     }
 }

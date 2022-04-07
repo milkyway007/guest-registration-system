@@ -8,5 +8,6 @@
         string State { get; set; }
         string Zip { get; set; }
         string Country { get; set; }
+        ICollection<IEvent> Events { get; set; }
     }
 }

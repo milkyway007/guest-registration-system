@@ -2,5 +2,6 @@
 {
     public interface IParticipant
     {
+        ICollection<IEventParticipant> Events { get; set; }
     }
 }

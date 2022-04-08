@@ -9,7 +9,6 @@ namespace Application.Events
     {
         public class Query : IRequest<Result<List<Event>>>
         {
-
         }
 
         public class Handler : IRequestHandler<Query, Result<List<Event>>>

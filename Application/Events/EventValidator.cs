@@ -7,8 +7,9 @@ namespace Application.Events
     {
         public EventValidator()
         {
-            RuleFor(c => c.Name).NotEmpty().MaximumLength(50);
-            RuleFor(c => c.Description).MaximumLength(1000);
+            RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Description).MaximumLength(1000);
+            RuleFor(x => x.Occurrence).GreaterThan(DateTime.Now);
         }
     }
 }

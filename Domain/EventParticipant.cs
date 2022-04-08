@@ -1,10 +1,12 @@
-﻿namespace Domain
+﻿using Domain.Interfaces;
+
+namespace Domain
 {
-    public class EventParticipant
+    public class EventParticipant : IEventParticipant
     {
         public int EventId { get; set; }
-        public Event Event { get; set; }
+        public IEvent Event { get; set; }
         public int ParticipantId { get; set; }
-        public Participant Participant { get; set; }
+        public IParticipant Participant { get; set; }
     }
 }

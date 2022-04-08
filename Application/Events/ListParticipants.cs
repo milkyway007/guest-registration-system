@@ -1,9 +1,13 @@
 ﻿using Application.Core;
+using Application.Interfaces;
+using Application.Interfaces.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Interfaces;
 
 namespace Application.Events
 {
@@ -17,12 +21,21 @@ namespace Application.Events
 
         public class Handler : IRequestHandler<Query, Result<List<EventParticipantDto>>>
         {
-            private readonly DataContext _context;
+            private readonly IDataContext _context;
             private readonly IMapper _mapper;
-            public Handler(DataContext context, IMapper mapper)
+            private readonly IEntityFrameworkQueryableExtensionsAbstraction _eFextensionsAbstraction;
+            private readonly IQueryableExtensionsAbstraction _extensionsAbstraction;
+
+            public Handler(
+                IDataContext context,
+                IMapper mapper,
+                IEntityFrameworkQueryableExtensionsAbstraction eFextensionsAbstraction,
+                IQueryableExtensionsAbstraction extensionsAbstraction)
             {
                 _mapper = mapper;
                 _context = context;
+                _eFextensionsAbstraction = eFextensionsAbstraction;
+                _extensionsAbstraction = extensionsAbstraction;
             }
 
             public async Task<Result<List<EventParticipantDto>>> Handle(
@@ -30,18 +43,22 @@ namespace Application.Events
                 CancellationToken cancellationToken)
             {
                 var query = _context.EventParticipants
-                    .Where(x => x.Event.Id == request.EventId)
-                    .ProjectTo<EventParticipantDto>(_mapper.ConfigurationProvider)
+                    .Where(x => x.Event.Id == request.EventId);
+
+                var query2 = _extensionsAbstraction.ProjectTo<EventParticipantDto>(
+                    query, _mapper.ConfigurationProvider) 
                     .AsQueryable();
 
-                query = request.Predicate switch
+                query2 = request.Predicate switch
                 {
-                    "person" => query.Where(x => !x.IsCompany).OrderBy(x => ((PersonDto)x.Participant).FirstName),
-                    "company" => query.Where(x => x.IsCompany).OrderBy(x => ((CompanyDto)x.Participant).Name),
-                    _ => query.OrderBy(x => x.Participant.Id)
+                    "person" => 
+                    query2.Where(x => !x.IsCompany).OrderBy(x => ((PersonDto)x.Participant).FirstName),
+                    "company" => 
+                    query2.Where(x => x.IsCompany).OrderBy(x => ((CompanyDto)x.Participant).Name),
+                    _ => query2.OrderBy(x => x.Participant.Id)
                 };
 
-                var participants = await query.ToListAsync();
+                var participants = await _eFextensionsAbstraction.ToListAsync(query2, cancellationToken);
 
                 return Result<List<EventParticipantDto>>.Success(participants);
             }

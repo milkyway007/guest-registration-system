@@ -3,6 +3,7 @@ using Domain;
 using FluentValidation;
 using MediatR;
 using Persistence;
+using Persistence.Interfaces;
 
 namespace Application.Events
 {
@@ -23,9 +24,9 @@ namespace Application.Events
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
-            private readonly DataContext _context;
+            private readonly IDataContext _context;
 
-            public Handler(DataContext context)
+            public Handler(IDataContext context)
             {
                 _context = context;
             }

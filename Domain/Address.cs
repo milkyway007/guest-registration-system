@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class Address : Entity
+    public class Address : Entity, IAddress
     {
         [Required]
         [StringLength(250)]
@@ -20,6 +21,6 @@ namespace Domain
         [Required]
         [StringLength(50)]
         public string Country { get; set; }
-        public ICollection<Event> Events { get; set; }
+        public ICollection<IEvent> Events { get; set; }
     }
 }

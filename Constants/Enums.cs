@@ -1,4 +1,4 @@
-﻿namespace Domain
+﻿namespace Constants
 {
     public class Enums
     {

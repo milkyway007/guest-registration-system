@@ -1,4 +1,6 @@
+using Constants;
 using Domain;
+using Domain.Interfaces;
 
 namespace Persistence
 {
@@ -11,7 +13,7 @@ namespace Persistence
                 !context.Events.Any() &&
                 !context.EventParticipants.Any())
             {
-                var addresses = new List<Address>
+                var addresses = new List<IAddress>
                 {
                     new Address
                     {
@@ -42,7 +44,7 @@ namespace Persistence
                     },
                 };
 
-                var companies = new List<Company>
+                var companies = new List<ICompany>
                 {
                     new Company
                     {
@@ -70,7 +72,7 @@ namespace Persistence
                     }
                 };
 
-                var persons = new List<Person>
+                var persons = new List<IPerson>
                 {
                     new Person
                     {
@@ -98,14 +100,14 @@ namespace Persistence
                     }
                 };
 
-                var events = new List<Event>
+                var events = new List<IEvent>
                 {
                     new Event
                     {
                         Name = "Mary J. Blige songs",
                         Occurrence = new DateTime(2021, 12, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {
@@ -123,7 +125,7 @@ namespace Persistence
                         Name = "Steven Tyler songs",
                         Occurrence = new DateTime(2021, 11, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {
@@ -141,7 +143,7 @@ namespace Persistence
                         Name = "Stevie Nicks songs",
                         Occurrence = new DateTime(2022, 5, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {
@@ -159,7 +161,7 @@ namespace Persistence
                         Name = "Joe Cocker songs",
                         Occurrence = new DateTime(2021, 6, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {
@@ -177,7 +179,7 @@ namespace Persistence
                         Name = "B.B. King songs",
                         Occurrence = new DateTime(2022, 10, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {
@@ -195,7 +197,7 @@ namespace Persistence
                         Name = "Patti LaBelle songs",
                         Occurrence = new DateTime(2022, 12, 15),
                         Description = "Very good event",
-                        Participants = new List<EventParticipant>
+                        Participants = new List<IEventParticipant>
                         {
                             new EventParticipant
                             {

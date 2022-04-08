@@ -1,12 +1,13 @@
 ﻿using Domain;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class AddressConfiguration : IEntityTypeConfiguration<Address>
+    public class AddressConfiguration : IEntityTypeConfiguration<IAddress>
     {
-        public void Configure(EntityTypeBuilder<Address> builder)
+        public void Configure(EntityTypeBuilder<IAddress> builder)
         {
             builder.ToTable("addresses");
 

@@ -1,29 +1,31 @@
 ﻿using Application.Core;
 using Domain;
+using Domain.Interfaces;
 using MediatR;
 using Persistence;
+using Persistence.Interfaces;
 
 namespace Application.Events
 {
     public class Details
     {
-        public class Query : IRequest<Result<Event>>
+        public class Query : IRequest<Result<IEvent>>
         {
             public int Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<Event>>
+        public class Handler : IRequestHandler<Query, Result<IEvent>>
         {
-            private readonly DataContext _context;
+            private readonly IDataContext _context;
 
-            public Handler(DataContext context)
+            public Handler(IDataContext context)
             {
                 _context = context;
             }
 
-            public async Task<Result<Event>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<IEvent>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<Event>.Success(await _context.Events.FindAsync(request.Id));
+                return Result<IEvent>.Success(await _context.Events.FindAsync(request.Id));
             }
         }
     }

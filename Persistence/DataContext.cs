@@ -1,19 +1,43 @@
 ﻿using Domain;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Persistence.Interfaces;
+using System.Data;
 
 namespace Persistence
 {
-    public class DataContext : DbContext
+    public class DataContext : DbContext, IDataContext
     {
         public DataContext(DbContextOptions options) : base(options)
         {
         }
 
-        public DbSet<Address> Addresses { get; set; }
-        public DbSet<Participant> Participants { get; set; }
-        public DbSet<Event> Events { get; set; }
-        public DbSet<EventParticipant> EventParticipants { get; set; }
+        public DbSet<IAddress> Addresses { get; set; }
+        public DbSet<IParticipant> Participants { get; set; }
+        public DbSet<IEvent> Events { get; set; }
+        public DbSet<IEventParticipant> EventParticipants { get; set; }
+
+        public override Task<int> SaveChangesAsync(
+            bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
+        {
+            AddTimestamps();
+
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return base.SaveChangesAsync();
+        }
+
+        public override int SaveChanges()
+        {
+            AddTimestamps();
+
+            return base.SaveChanges();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,26 +57,12 @@ namespace Persistence
         {
             base.OnModelCreating(builder);
 
-            new AddressConfiguration().Configure(builder.Entity<Address>());
-            new CompanyConfiguration().Configure(builder.Entity<Company>());
-            new EventConfiguration().Configure(builder.Entity<Event>());
-            new EventParticipantConfiguration().Configure(builder.Entity<EventParticipant>());
-            new PersonConfiguration().Configure(builder.Entity<Person>());
-            new ParticipantConfiguration().Configure(builder.Entity<Participant>());
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            AddTimestamps();
-
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        public override int SaveChanges()
-        {
-            AddTimestamps();
-
-            return base.SaveChanges();
+            new AddressConfiguration().Configure(builder.Entity<IAddress>());
+            new CompanyConfiguration().Configure(builder.Entity<ICompany>());
+            new EventConfiguration().Configure(builder.Entity<IEvent>());
+            new EventParticipantConfiguration().Configure(builder.Entity<IEventParticipant>());
+            new PersonConfiguration().Configure(builder.Entity<IPerson>());
+            new ParticipantConfiguration().Configure(builder.Entity<IParticipant>());
         }
 
         private void AddTimestamps()

@@ -1,12 +1,13 @@
 ﻿using Domain;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class EventConfiguration : IEntityTypeConfiguration<Event>
+    public class EventConfiguration : IEntityTypeConfiguration<IEvent>
     {
-        public void Configure(EntityTypeBuilder<Event> builder)
+        public void Configure(EntityTypeBuilder<IEvent> builder)
         {
             builder.ToTable("events");
 

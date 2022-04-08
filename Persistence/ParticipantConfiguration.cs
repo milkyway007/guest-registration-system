@@ -1,12 +1,13 @@
 ﻿using Domain;
+using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class ParticipantConfiguration : IEntityTypeConfiguration<Participant>
+    public class ParticipantConfiguration : IEntityTypeConfiguration<IParticipant>
     {
-        public void Configure(EntityTypeBuilder<Participant> builder)
+        public void Configure(EntityTypeBuilder<IParticipant> builder)
         {
             builder.ToTable("participant");
 

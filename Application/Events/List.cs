@@ -26,7 +26,8 @@ namespace Application.Events
             }
 
             public async Task<Result<List<IEvent>>> Handle(
-                Query request, CancellationToken cancellationToken)
+                Query request,
+                CancellationToken cancellationToken)
             {
                 return Result<List<IEvent>>.Success(
                     await _extensionsAbstraction.ToListAsync(_context.Events, cancellationToken));

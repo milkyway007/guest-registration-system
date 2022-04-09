@@ -37,23 +37,22 @@ namespace Application.Events
                 Query request,
                 CancellationToken cancellationToken)
             {
-                var query = _context.EventParticipants
+                var eventParticipantQuery = _context.EventParticipants
                     .Where(x => x.Event.Id == request.EventId);
-
-                var query2 = _extensionsAbstraction.ProjectTo<EventParticipantDto>(
-                    query, _mapper.ConfigurationProvider) 
+                var eventParticipantDtoQuery = _extensionsAbstraction.ProjectTo<EventParticipantDto>(
+                    eventParticipantQuery, _mapper.ConfigurationProvider) 
                     .AsQueryable();
-
-                query2 = request.Predicate switch
+                eventParticipantDtoQuery = request.Predicate switch
                 {
                     "person" => 
-                    query2.Where(x => !x.IsCompany).OrderBy(x => ((PersonDto)x.Participant).FirstName),
+                    eventParticipantDtoQuery.Where(x => !x.IsCompany).OrderBy(x => ((PersonDto)x.Participant).FirstName),
                     "company" => 
-                    query2.Where(x => x.IsCompany).OrderBy(x => ((CompanyDto)x.Participant).Name),
-                    _ => query2.OrderBy(x => x.Participant.Id)
+                    eventParticipantDtoQuery.Where(x => x.IsCompany).OrderBy(x => ((CompanyDto)x.Participant).Name),
+                    _ => eventParticipantDtoQuery.OrderBy(x => x.Participant.Id)
                 };
 
-                var participants = await _eFextensionsAbstraction.ToListAsync(query2, cancellationToken);
+                var participants = await _eFextensionsAbstraction
+                    .ToListAsync(eventParticipantDtoQuery, cancellationToken);
 
                 return Result<List<EventParticipantDto>>.Success(participants);
             }

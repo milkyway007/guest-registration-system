@@ -43,7 +43,6 @@ namespace Participants.Events
 
                 _mapper.Map(request.Participant, participant);
                 var result = await _context.SaveChangesAsync() > 0;
-
                 if (!result)
                 {
                     return Result<Unit>.Failure("Failed to edit participant.");

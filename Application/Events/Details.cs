@@ -21,7 +21,9 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<IEvent>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<IEvent>> Handle(
+                Query request,
+                CancellationToken cancellationToken)
             {
                 return Result<IEvent>.Success(await _context.Events.FindAsync(request.Id));
             }

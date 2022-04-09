@@ -22,14 +22,14 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
-                var a = _context.Events
-                    .Include(x => x.Participants);
-
-                var e = await a.ThenInclude(x => x.Participant)
+                var e = await _context.Events
+                    .Include(x => x.Participants)
+                    .ThenInclude(x => x.Participant)
                     .SingleOrDefaultAsync(x => x.Id == request.EventId);
-
                 if (e == null)
                 {
                     return null;
@@ -37,14 +37,12 @@ namespace Application.Events
 
                 var participant = e.Participants
                     .FirstOrDefault(x => x.Participant.Id == request.ParticipantId);
-
                 if (participant == null)
                 {
                     return null;
                 }
 
                 e.Participants.Remove(participant);
-
                 var result = await _context.SaveChangesAsync() > 0;
 
                 return result ?

@@ -21,7 +21,9 @@ namespace Participants.Events
                 _context = context;
             }
 
-            public async Task<Result<IParticipant>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<IParticipant>> Handle(
+                Query request,
+                CancellationToken cancellationToken)
             {
                 return Result<IParticipant>.Success(await _context.Participants.FindAsync(request.Id));
             }

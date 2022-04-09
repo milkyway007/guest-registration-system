@@ -17,7 +17,8 @@ namespace Application.Participants
             var dbParticipant = DataContext.Participants
                                 .Where(x => x is Company)
                                 .Cast<Company>()
-                                .Where(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase))
+                                .Where(x => string.Equals(x.Name, name,
+                                StringComparison.OrdinalIgnoreCase))
                                 .SingleOrDefault();
 
             return dbParticipant == null;

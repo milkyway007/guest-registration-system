@@ -33,7 +33,9 @@ namespace Application.Events
                 _mapper = mapper;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
                 var e = await _context.Events.FindAsync(request.Event.Id);
                 if (e == null)

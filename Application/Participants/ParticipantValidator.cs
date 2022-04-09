@@ -18,7 +18,8 @@ namespace Application.Participants
         private bool UniqueCode(Participant participant, string code)
         {
             var dbParticipant = DataContext.Participants
-                                .Where(x => string.Equals(x.Code, code, StringComparison.OrdinalIgnoreCase))
+                                .Where(x => string.Equals(x.Code, code,
+                                StringComparison.OrdinalIgnoreCase))
                                 .SingleOrDefault();
 
             return dbParticipant == null;

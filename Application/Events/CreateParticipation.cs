@@ -23,12 +23,14 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
                 var e = await _context.Events
-                    .Include(x => x.Participants).ThenInclude(x => x.Participant)
+                    .Include(x => x.Participants)
+                    .ThenInclude(x => x.Participant)
                     .SingleOrDefaultAsync(x => x.Id == request.EventId);
-
                 if (e == null)
                 {
                     return null;
@@ -36,7 +38,6 @@ namespace Application.Events
 
                 var participant = e.Participants
                     .FirstOrDefault(x => x.Participant.Code == request.Participant.Code);
-
                 if (participant != null)
                 {
                     return Result<Unit>
@@ -48,10 +49,8 @@ namespace Application.Events
                     Event = e,
                     Participant = request.Participant,
                 };
-
                 _context.Participants.Add(request.Participant);
                 e.Participants.Add(eventParticipant);
-
                 var result = await _context.SaveChangesAsync() > 0;
 
                 return result ?

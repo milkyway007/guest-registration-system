@@ -2,7 +2,6 @@
 using Domain;
 using FluentValidation;
 using MediatR;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Application.Events
@@ -31,7 +30,9 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
                 _context.Events.Add(request.Event);
                 var result = await _context.SaveChangesAsync() > 0;

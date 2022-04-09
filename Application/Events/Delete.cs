@@ -20,7 +20,9 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(
+                Command request,
+                CancellationToken cancellationToken)
             {
                 var e = await _context.Events.FindAsync(request.Id);
                 if(e == null)

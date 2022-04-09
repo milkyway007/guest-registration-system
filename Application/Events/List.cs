@@ -1,11 +1,7 @@
 ﻿using Application.Core;
-using Application.Interfaces;
 using Application.Interfaces.Core;
-using Domain;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Application.Events

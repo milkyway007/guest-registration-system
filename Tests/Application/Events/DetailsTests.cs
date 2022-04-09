@@ -1,7 +1,6 @@
-﻿ using Application.Events;
+﻿using Application.Events;
 using Domain;
 using Domain.Interfaces;
-using MediatR;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;

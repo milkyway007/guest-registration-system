@@ -3,7 +3,6 @@ using AutoMapper;
 using Domain;
 using FluentValidation;
 using MediatR;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Participants.Events

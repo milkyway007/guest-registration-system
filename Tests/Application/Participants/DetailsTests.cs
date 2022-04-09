@@ -1,10 +1,7 @@
-﻿
-
-using Domain;
+﻿using Domain;
 using Domain.Interfaces;
 using MockQueryable.Moq;
 using Moq;
-using NSubstitute;
 using NUnit.Framework;
 using Participants.Events;
 using Persistence.Interfaces;

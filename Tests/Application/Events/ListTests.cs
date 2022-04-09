@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 using List = Application.Events.List;
 using Moq;
 using Persistence.Interfaces;
-using Domain.Interfaces;
 using Domain;
-using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using MockQueryable.Moq;
-using Application.Interfaces;
 using Application.Interfaces.Core;
+using Domain.Interfaces;
 
 namespace Tests.Application.Events
 {
@@ -55,7 +53,7 @@ namespace Tests.Application.Events
 
             //Assert
             _extensionsAbstraction.Verify(x => x.ToListAsync(
-                It.IsAny<IQueryable<IEvent>>(), It.IsAny<CancellationToken>()));
+                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()));
         }
 
         [Test]
@@ -111,7 +109,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<List<IEvent>>(actual.Value);
+            Assert.IsInstanceOf<List<Event>>(actual.Value);
         }
     }
 }

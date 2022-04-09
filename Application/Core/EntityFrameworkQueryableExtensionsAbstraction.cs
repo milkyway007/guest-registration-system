@@ -1,5 +1,4 @@
-﻿using Application.Interfaces;
-using Application.Interfaces.Core;
+﻿using Application.Interfaces.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Core

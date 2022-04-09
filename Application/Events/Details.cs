@@ -1,8 +1,6 @@
 ﻿using Application.Core;
-using Domain;
 using Domain.Interfaces;
 using MediatR;
-using Persistence;
 using Persistence.Interfaces;
 
 namespace Application.Events

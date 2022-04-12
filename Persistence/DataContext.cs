@@ -1,7 +1,7 @@
-﻿using Domain;
-using Domain.Interfaces;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Persistence.Configuration;
 using Persistence.Interfaces;
 using System.Data;
 

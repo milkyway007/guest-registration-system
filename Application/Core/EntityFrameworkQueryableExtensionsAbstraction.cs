@@ -6,9 +6,11 @@ namespace Application.Core
     public class EntityFrameworkQueryableExtensionsAbstraction :
         IEntityFrameworkQueryableExtensionsAbstraction
     {
-        public Task<List<T>> ToListAsync<T>(IQueryable<T> target, CancellationToken cancellationToken = default)
+        public Task<List<T>> ToListAsync<T>(
+            IQueryable<T> target,
+            CancellationToken cancellationToken = default)
         {
-            return target.ToListAsync();
+            return target.ToListAsync(cancellationToken);
         }
     }
 }

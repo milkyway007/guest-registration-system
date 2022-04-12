@@ -12,7 +12,7 @@ namespace Application.Core
             IConfigurationProvider configuration,
             params Expression<Func<T, object>>[] membersToExpand)
         {
-            return source.ProjectTo<T>(configuration);
+            return source.ProjectTo<T>(configuration, membersToExpand);
         }
     }
 }

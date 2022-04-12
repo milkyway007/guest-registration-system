@@ -1,7 +1,7 @@
-﻿using Application.Events;
-using Domain;
+﻿using Application.Events.Commands;
+using Application.Events.Queries;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -16,40 +16,61 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-            return HandleResult(await Mediator.Send(new Details.Query { Id = id}));
+            return HandleResult(await Mediator.Send(
+                new Details.Query
+                {
+                    Id = id
+                }));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEvent(Event e)
         {
-            return HandleResult(await Mediator.Send(new Create.Command { Event = e}));
+            return HandleResult(await Mediator.Send(
+                new Create.Command
+                {
+                    Event = e
+                }));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> EditEvent(int id, Event e)
         {
             e.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command { Event = e }));
+            return HandleResult(await Mediator.Send(
+                new Edit.Command
+                {
+                    Event = e
+                }));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+            return HandleResult(await Mediator.Send(
+                new Delete.Command {
+                    Id = id
+                }));
         }
 
         [HttpGet("{id}/persons")]
         public async Task<IActionResult> GetPersons(int id)
         {
-            return HandleResult(await Mediator.Send(new ListPersons.Query
-            { EventId = id }));
+            return HandleResult(await Mediator.Send(
+                new ListPersons.Query
+                {
+                    EventId = id
+                }));
         }
 
         [HttpGet("{id}/companies")]
         public async Task<IActionResult> GetCompanies(int id)
         {
-            return HandleResult(await Mediator.Send(new ListCompanies.Query
-            { EventId = id }));
+            return HandleResult(await Mediator.Send(
+                new ListCompanies.Query
+                {
+                    EventId = id
+                }));
         }
 
         [HttpPost("{eventId}/persons")]
@@ -78,7 +99,11 @@ namespace API.Controllers
         public async Task<IActionResult> CancelParticipation(int eventId, int participantId)
         {
             return HandleResult(await Mediator.Send(
-                new CancelParticipation.Command { EventId = eventId, ParticipantId = participantId }));
+                new CancelParticipation.Command
+                {
+                    EventId = eventId,
+                    ParticipantId = participantId
+                }));
         }
     }
 }

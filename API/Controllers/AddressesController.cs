@@ -1,5 +1,5 @@
-﻿using Application.Addresses;
-using Domain;
+﻿using Application.Addresses.Commands;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -9,7 +9,11 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAddress(Address address)
         {
-            return HandleResult(await Mediator.Send(new Create.Command { Address = address }));
+            return HandleResult(await Mediator.Send(
+                new Create.Command
+                {
+                    Address = address
+                }));
         }
     }
 }

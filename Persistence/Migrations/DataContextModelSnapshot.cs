@@ -17,7 +17,7 @@ namespace Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.3");
 
-            modelBuilder.Entity("Domain.Address", b =>
+            modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace Persistence.Migrations
                     b.ToTable("addresses", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Event", b =>
+            modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,7 +99,7 @@ namespace Persistence.Migrations
                     b.ToTable("events", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.EventParticipant", b =>
+            modelBuilder.Entity("Domain.Entities.EventParticipant", b =>
                 {
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
@@ -117,7 +117,7 @@ namespace Persistence.Migrations
                     b.ToTable("event_participants", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Participant", b =>
+            modelBuilder.Entity("Domain.Entities.Participant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,12 +145,12 @@ namespace Persistence.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("participant", (string)null);
+                    b.ToTable("participants", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Company", b =>
+            modelBuilder.Entity("Domain.Entities.Company", b =>
                 {
-                    b.HasBaseType("Domain.Participant");
+                    b.HasBaseType("Domain.Entities.Participant");
 
                     b.Property<string>("Description")
                         .HasMaxLength(5000)
@@ -170,9 +170,9 @@ namespace Persistence.Migrations
                     b.ToTable("companies", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Person", b =>
+            modelBuilder.Entity("Domain.Entities.Person", b =>
                 {
-                    b.HasBaseType("Domain.Participant");
+                    b.HasBaseType("Domain.Entities.Participant");
 
                     b.Property<string>("Description")
                         .HasMaxLength(1500)
@@ -191,9 +191,9 @@ namespace Persistence.Migrations
                     b.ToTable("persons", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Event", b =>
+            modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
-                    b.HasOne("Domain.Address", "Address")
+                    b.HasOne("Domain.Entities.Address", "Address")
                         .WithMany("Events")
                         .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -202,15 +202,15 @@ namespace Persistence.Migrations
                     b.Navigation("Address");
                 });
 
-            modelBuilder.Entity("Domain.EventParticipant", b =>
+            modelBuilder.Entity("Domain.Entities.EventParticipant", b =>
                 {
-                    b.HasOne("Domain.Event", "Event")
+                    b.HasOne("Domain.Entities.Event", "Event")
                         .WithMany("Participants")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Participant", "Participant")
+                    b.HasOne("Domain.Entities.Participant", "Participant")
                         .WithMany("Events")
                         .HasForeignKey("ParticipantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -221,35 +221,35 @@ namespace Persistence.Migrations
                     b.Navigation("Participant");
                 });
 
-            modelBuilder.Entity("Domain.Company", b =>
+            modelBuilder.Entity("Domain.Entities.Company", b =>
                 {
-                    b.HasOne("Domain.Participant", null)
+                    b.HasOne("Domain.Entities.Participant", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Company", "Id")
+                        .HasForeignKey("Domain.Entities.Company", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Person", b =>
+            modelBuilder.Entity("Domain.Entities.Person", b =>
                 {
-                    b.HasOne("Domain.Participant", null)
+                    b.HasOne("Domain.Entities.Participant", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Person", "Id")
+                        .HasForeignKey("Domain.Entities.Person", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Address", b =>
+            modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
                     b.Navigation("Events");
                 });
 
-            modelBuilder.Entity("Domain.Event", b =>
+            modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("Domain.Participant", b =>
+            modelBuilder.Entity("Domain.Entities.Participant", b =>
                 {
                     b.Navigation("Events");
                 });

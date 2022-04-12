@@ -1,6 +1,6 @@
-﻿using Application.Events;
+﻿using Application.Events.Dtos;
 using AutoMapper;
-using Domain;
+using Domain.Entities;
 
 namespace Application.Core
 {
@@ -21,11 +21,6 @@ namespace Application.Core
 
             CreateMap<Company, CompanyDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-
-            CreateMap<EventParticipant, EventParticipantDto>()
-                .ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.EventId))
-                .ForMember(dest => dest.ParticipantId, opt => opt.MapFrom(src => src.ParticipantId))
-                .ForMember(dest => dest.Participant, opt => opt.MapFrom(src => src.Participant));
 
             CreateMap<Participant, Participant>();
             CreateMap<Person, Person>()

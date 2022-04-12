@@ -1,5 +1,4 @@
-﻿using Domain;
-using Domain.Interfaces;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 

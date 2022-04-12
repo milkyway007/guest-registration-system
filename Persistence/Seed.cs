@@ -1,6 +1,5 @@
 using Constants;
-using Domain;
-using Domain.Interfaces;
+using Domain.Entities;
 
 namespace Persistence
 {

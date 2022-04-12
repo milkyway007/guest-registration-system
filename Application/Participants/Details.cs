@@ -1,18 +1,19 @@
 ﻿using Application.Core;
+using Domain;
 using Domain.Interfaces;
 using MediatR;
 using Persistence.Interfaces;
 
-namespace Participants.Events
+namespace Application.Participants
 {
     public class Details
     {
-        public class Query : IRequest<Result<IParticipant>>
+        public class Query : IRequest<Result<Participant>>
         {
             public int Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<IParticipant>>
+        public class Handler : IRequestHandler<Query, Result<Participant>>
         {
             private readonly IDataContext _context;
 
@@ -21,11 +22,11 @@ namespace Participants.Events
                 _context = context;
             }
 
-            public async Task<Result<IParticipant>> Handle(
+            public async Task<Result<Participant>> Handle(
                 Query request,
                 CancellationToken cancellationToken)
             {
-                return Result<IParticipant>.Success(await _context.Participants.FindAsync(request.Id));
+                return Result<Participant>.Success(await _context.Participants.FindAsync(request.Id));
             }
         }
     }

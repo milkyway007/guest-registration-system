@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class AddressConfiguration : IEntityTypeConfiguration<IAddress>
+    public class AddressConfiguration : IEntityTypeConfiguration<Address>
     {
-        public void Configure(EntityTypeBuilder<IAddress> builder)
+        public void Configure(EntityTypeBuilder<Address> builder)
         {
             builder.ToTable("addresses");
 

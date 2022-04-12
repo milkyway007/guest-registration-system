@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class PersonConfiguration : IEntityTypeConfiguration<IPerson>
+    public class PersonConfiguration : IEntityTypeConfiguration<Person>
     {
-        public void Configure(EntityTypeBuilder<IPerson> builder)
+        public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.ToTable("persons");
 

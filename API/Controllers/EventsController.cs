@@ -1,6 +1,7 @@
 ﻿using Application.Events;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace API.Controllers
 {
@@ -37,18 +38,40 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
         }
 
-        [HttpGet("{id}/participants")]
-        public async Task<IActionResult> GetEventParticipants(int id, string predicate)
+        [HttpGet("{id}/persons")]
+        public async Task<IActionResult> GetPersons(int id)
         {
-            return HandleResult(await Mediator.Send(new ListParticipants.Query
-            { EventId = id, Predicate = predicate }));
+            return HandleResult(await Mediator.Send(new ListPersons.Query
+            { EventId = id }));
         }
 
-        [HttpPost("{eventId}/participants")]
-        public async Task<IActionResult> CreateParticipation(int eventId, Participant participant)
+        [HttpGet("{id}/companies")]
+        public async Task<IActionResult> GetCompanies(int id)
+        {
+            return HandleResult(await Mediator.Send(new ListCompanies.Query
+            { EventId = id }));
+        }
+
+        [HttpPost("{eventId}/persons")]
+        public async Task<IActionResult> CreatePerson(int eventId, Person person)
         {
             return HandleResult(await Mediator.Send(
-                new CreateParticipation.Command { EventId = eventId, Participant = participant }));
+                new CreateParticipation.Command
+                {
+                    EventId = eventId,
+                    Participant = person,
+                }));
+        }
+
+        [HttpPost("{eventId}/companies")]
+        public async Task<IActionResult> CreateCompany(int eventId, Company company)
+        {
+            return HandleResult(await Mediator.Send(
+                new CreateParticipation.Command
+                {
+                    EventId = eventId,
+                    Participant = company,
+                }));
         }
 
         [HttpDelete("{eventId}/participants/{participantId}")]

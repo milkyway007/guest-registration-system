@@ -1,9 +1,8 @@
-﻿using Domain.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
-    public class Company : Participant, ICompany
+    public class Company : Participant
     {
         [Required]
         [StringLength(50)]

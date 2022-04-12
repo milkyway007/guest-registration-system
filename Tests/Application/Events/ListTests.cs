@@ -32,7 +32,7 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldTryList()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -43,8 +43,8 @@ namespace Tests.Application.Events
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _extensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<IEvent>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult((List<IEvent>)null));
+                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult((List<Event>)null));
 
             var query = new List.Query();
 
@@ -60,7 +60,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventsNotFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -71,8 +71,8 @@ namespace Tests.Application.Events
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _extensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<IEvent>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult((List<IEvent>)null));
+                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult((List<Event>)null));
 
             var query = new List.Query();
 
@@ -88,7 +88,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventsFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -99,7 +99,7 @@ namespace Tests.Application.Events
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _extensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<IEvent>>(), It.IsAny<CancellationToken>()))
+                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(eventList));
 
             var query = new List.Query();

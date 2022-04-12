@@ -30,7 +30,7 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -59,7 +59,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventNotFound_ShouldReturnNull()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -88,7 +88,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventFound_ShouldRemove()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -102,9 +102,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IEvent>(eventList[1]));
+                .Returns(new ValueTask<Event>(eventList[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Delete.Command
             {
@@ -115,14 +116,14 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            _dataContext.Verify(x => x.Remove(It.IsAny<IEvent>()), Times.Once);
+            _dataContext.Verify(x => x.Remove(It.IsAny<Event>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_EventFound_ShouldSaveChanges()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -136,9 +137,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IEvent>(eventList[1]));
+                .Returns(new ValueTask<Event>(eventList[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Delete.Command
             {
@@ -149,14 +151,14 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            _dataContext.Verify(x => x.SaveChangesAsync(), Times.Once);
+            _dataContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_ChangesSaved_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -170,9 +172,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IEvent>(eventList[1]));
+                .Returns(new ValueTask<Event>(eventList[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Delete.Command
             {
@@ -191,7 +194,7 @@ namespace Tests.Application.Events
         public async Task Handle_ChangesNotSaved_ShouldReturnFailure()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -205,9 +208,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IEvent>(eventList[1]));
+                .Returns(new ValueTask<Event>(eventList[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(-1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(-1));
 
             var command = new Delete.Command
             {

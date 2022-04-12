@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class CompanyConfiguration : IEntityTypeConfiguration<ICompany>
+    public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
-        public void Configure(EntityTypeBuilder<ICompany> builder)
+        public void Configure(EntityTypeBuilder<Company> builder)
         {
             builder.ToTable("companies");
 

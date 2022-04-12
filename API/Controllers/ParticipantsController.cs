@@ -1,6 +1,6 @@
-﻿using Domain;
+﻿using Application.Participants;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
-using Participants.Events;
 
 namespace API.Controllers
 {
@@ -12,11 +12,18 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Details.Query { Id = id }));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditParticipant(int id, Participant e)
+        [HttpPut("persons/{id}")]
+        public async Task<IActionResult> EditParticipant(int id, Person participant)
         {
-            e.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command { Participant = e }));
+            participant.Id = id;
+            return HandleResult(await Mediator.Send(new Edit.Command { Participant = participant }));
+        }
+
+        [HttpPut("companies/{id}")]
+        public async Task<IActionResult> EditCompanies(int id, Company participant)
+        {
+            participant.Id = id;
+            return HandleResult(await Mediator.Send(new Edit.Command { Participant = participant }));
         }
     }
 }

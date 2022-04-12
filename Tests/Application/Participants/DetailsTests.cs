@@ -1,9 +1,9 @@
-﻿using Domain;
+﻿using Application.Participants;
+using Domain;
 using Domain.Interfaces;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
-using Participants.Events;
 using Persistence.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace Tests.Application.Participants
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<IParticipant>
+            var eventList = new List<Participant>
             {
                 new Company
                 {
@@ -58,7 +58,7 @@ namespace Tests.Application.Participants
         public async Task Handle_EventNotFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IParticipant>
+            var eventList = new List<Participant>
             {
                 new Person
                 {
@@ -88,7 +88,7 @@ namespace Tests.Application.Participants
         public async Task Handle_EventFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IParticipant>
+            var eventList = new List<Participant>
             {
                 new Person
                 {
@@ -98,7 +98,7 @@ namespace Tests.Application.Participants
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IParticipant>(eventList[0]));
+                .Returns(new ValueTask<Participant>(eventList[0]));
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
 
             var query = new Details.Query
@@ -111,7 +111,7 @@ namespace Tests.Application.Participants
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<IParticipant>(actual.Value);
+            Assert.IsInstanceOf<Participant>(actual.Value);
         }
     }
 }

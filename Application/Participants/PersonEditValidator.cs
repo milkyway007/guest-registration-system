@@ -4,9 +4,9 @@ using Persistence;
 
 namespace Application.Participants
 {
-    public class PersonValidator : ParticipantValidator<Person>
+    public class PersonEditValidator : ParticipantEditValidator<Person>
     {
-        public PersonValidator(DataContext dataContext) : base(dataContext)
+        public PersonEditValidator(DataContext dataContext) : base(dataContext)
         {
             RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
             RuleFor(x => x.LastName).NotEmpty().MaximumLength(50);

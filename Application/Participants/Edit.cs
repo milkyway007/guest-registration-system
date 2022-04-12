@@ -5,7 +5,7 @@ using FluentValidation;
 using MediatR;
 using Persistence.Interfaces;
 
-namespace Participants.Events
+namespace Application.Participants
 {
     public class Edit
     {

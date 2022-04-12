@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence
 {
-    public class EventParticipantConfiguration : IEntityTypeConfiguration<IEventParticipant>
+    public class EventParticipantConfiguration : IEntityTypeConfiguration<EventParticipant>
     {
-        public void Configure(EntityTypeBuilder<IEventParticipant> builder)
+        public void Configure(EntityTypeBuilder<EventParticipant> builder)
         {
             builder.ToTable("event_participants");
 

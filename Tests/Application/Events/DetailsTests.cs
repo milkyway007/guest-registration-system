@@ -29,7 +29,7 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -58,7 +58,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventNotFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -88,7 +88,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -98,7 +98,7 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<IEvent>(eventList[0]));
+                .Returns(new ValueTask<Event>(eventList[0]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
 
             var query = new Details.Query
@@ -111,7 +111,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<IEvent>(actual.Value);
+            Assert.IsInstanceOf<Event>(actual.Value);
         }
     }
 }

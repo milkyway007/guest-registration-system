@@ -1,6 +1,7 @@
 ﻿using Application.Core;
 using AutoMapper;
 using Domain;
+using Domain.Interfaces;
 using FluentValidation;
 using MediatR;
 using Persistence.Interfaces;
@@ -18,7 +19,7 @@ namespace Application.Events
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Event).NotEmpty();
+                RuleFor(x => x.Event).SetValidator(new EventValidator());
             }
         }
 

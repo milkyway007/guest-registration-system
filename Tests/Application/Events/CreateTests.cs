@@ -1,6 +1,5 @@
 ﻿using Application.Events;
 using Domain;
-using Domain.Interfaces;
 using MediatR;
 using MockQueryable.Moq;
 using Moq;
@@ -30,7 +29,7 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldAdd()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -40,7 +39,8 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Create.Command
             {
@@ -54,14 +54,14 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            eventSet.Verify(x => x.Add(It.IsAny<IEvent>()), Times.Once);
+            eventSet.Verify(x => x.Add(It.IsAny<Event>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_ShouldSaveChanges()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -71,7 +71,8 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Create.Command
             {
@@ -85,14 +86,14 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            _dataContext.Verify(x => x.SaveChangesAsync(), Times.Once);
+            _dataContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_ChangesSaved_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -102,7 +103,8 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new Create.Command
             {
@@ -124,7 +126,7 @@ namespace Tests.Application.Events
         public async Task Handle_ChangesNotSaved_ShouldReturnFailure()
         {
             //Arrange
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -134,7 +136,8 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(-1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(-1));
 
             var command = new Create.Command
             {

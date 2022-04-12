@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="EventAddress.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Constants\Constants.csproj" />
     <ProjectReference Include="..\Domain.Interfaces\Domain.Interfaces.csproj" />
   </ItemGroup>

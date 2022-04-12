@@ -11,6 +11,9 @@
   <ItemGroup>
     <Compile Remove="Class1.cs" />
     <Compile Remove="Events\EventParticipantResultDto.cs" />
+    <Compile Remove="Participants\CompanyEditValidator.cs" />
+    <Compile Remove="Participants\ParticipantEditValidator.cs" />
+    <Compile Remove="Participants\PersonEditValidator.cs" />
   </ItemGroup>
 
   <ItemGroup>

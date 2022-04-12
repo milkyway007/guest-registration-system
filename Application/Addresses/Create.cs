@@ -4,24 +4,24 @@ using FluentValidation;
 using MediatR;
 using Persistence.Interfaces;
 
-namespace Application.Events
+namespace Application.Addresses
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>>
+        public class Command : IRequest<Result<int>>
         {
-            public Event Event { get; set; }
+            public Address Address { get; set; }
         }
 
         public class CommandValidator : AbstractValidator<Command>
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Event).SetValidator(new EventValidator());
+                RuleFor(x => x.Address).NotEmpty();
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<Unit>>
+        public class Handler : IRequestHandler<Command, Result<int>>
         {
             private readonly IDataContext _context;
 
@@ -30,19 +30,19 @@ namespace Application.Events
                 _context = context;
             }
 
-            public async Task<Result<Unit>> Handle(
+            public async Task<Result<int>> Handle(
                 Command request,
                 CancellationToken cancellationToken)
             {
-                _context.Events.Add(request.Event);
+                _context.Addresses.Add(request.Address);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result)
                 {
-                    return Result<Unit>.Failure("Failed to create event.");
+                    return Result<int>.Failure("Failed to create address.");
                 }
 
-                return Result<Unit>.Success(Unit.Value);
+                return Result<int>.Success(request.Address.Id);
             }
         }
     }

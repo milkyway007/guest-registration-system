@@ -1,6 +1,6 @@
 ﻿using Application.Events;
+using AutoMapper;
 using Domain;
-using Domain.Interfaces;
 using MediatR;
 using MockQueryable.Moq;
 using Moq;
@@ -18,12 +18,14 @@ namespace Tests.Application.Events
     {
         private CreateParticipation.Handler _subject;
         private Mock<IDataContext> _dataContext;
+        private Mock<IMapper> _mapper;
 
         [SetUp]
         public void SetUp()
         {
             _dataContext = new Mock<IDataContext>();
-            _subject = new CreateParticipation.Handler(_dataContext.Object);
+            _mapper = new Mock<IMapper>();
+            _subject = new CreateParticipation.Handler(_dataContext.Object, _mapper.Object);
         }
 
         [Test]
@@ -40,7 +42,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -51,7 +53,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -94,7 +96,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -105,7 +107,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -113,7 +115,7 @@ namespace Tests.Application.Events
                     Participants = participantList,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -156,7 +158,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var eventParticipants = new List<IEventParticipant>
+            var eventParticipants = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -167,7 +169,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -175,7 +177,7 @@ namespace Tests.Application.Events
                     Participants = eventParticipants,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -200,7 +202,7 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            participantSet.Verify(x => x.Add(It.IsAny<IParticipant>()), Times.Once);
+            participantSet.Verify(x => x.Add(It.IsAny<Participant>()), Times.Once);
         }
 
         [Test]
@@ -217,7 +219,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -228,7 +230,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -236,7 +238,7 @@ namespace Tests.Application.Events
                     Participants = participantList,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -246,7 +248,8 @@ namespace Tests.Application.Events
             var participantSet = participants.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new CreateParticipation.Command
             {
@@ -281,7 +284,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -292,7 +295,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -300,7 +303,7 @@ namespace Tests.Application.Events
                     Participants = participantList,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -310,7 +313,8 @@ namespace Tests.Application.Events
             var participantSet = participants.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new CreateParticipation.Command
             {
@@ -326,7 +330,7 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            _dataContext.Verify(x => x.SaveChangesAsync(), Times.Once);
+            _dataContext.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
@@ -343,7 +347,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -354,7 +358,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -362,7 +366,7 @@ namespace Tests.Application.Events
                     Participants = participantList,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -372,7 +376,8 @@ namespace Tests.Application.Events
             var participantSet = participants.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(1));
 
             var command = new CreateParticipation.Command
             {
@@ -406,7 +411,7 @@ namespace Tests.Application.Events
                 Id = 2,
                 Code = "C",
             };
-            var participantList = new List<IEventParticipant>
+            var participantList = new List<EventParticipant>
             {
                 new EventParticipant
                 {
@@ -417,7 +422,7 @@ namespace Tests.Application.Events
                     Participant = company,
                 },
             };
-            var eventList = new List<IEvent>
+            var eventList = new List<Event>
             {
                 new Event
                 {
@@ -425,7 +430,7 @@ namespace Tests.Application.Events
                     Participants = participantList,
                 },
             };
-            var participants = new List<IParticipant>
+            var participants = new List<Participant>
             {
                 person,
                 company
@@ -435,7 +440,8 @@ namespace Tests.Application.Events
             var participantSet = participants.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync()).Returns(Task.FromResult(-1));
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(-1));
 
             var command = new CreateParticipation.Command
             {

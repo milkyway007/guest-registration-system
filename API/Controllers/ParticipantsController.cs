@@ -2,6 +2,7 @@
 using Application.Participants.Queries;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Participants.Events;
 
 namespace API.Controllers
 {

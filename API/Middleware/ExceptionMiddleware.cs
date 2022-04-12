@@ -41,12 +41,12 @@ namespace API.Middleware
                 }
                 else
                 {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                    var response = _env.IsDevelopment()
-                        ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
+                var response = _env.IsDevelopment()
+                    ? new AppException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
                         : new AppException(context.Response.StatusCode, Constants.SERVER_ERROR);
-                    
+
                     json = JsonSerializer.Serialize(response, options);
                 }
 

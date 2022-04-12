@@ -34,7 +34,7 @@ namespace API.Controllers
             participant.Id = id;
             return HandleResult(await Mediator.Send(
                 new Edit.Command
-                {
+        {
                     Participant = participant
                 }));
         }

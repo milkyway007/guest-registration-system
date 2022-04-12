@@ -24,19 +24,16 @@ namespace Application.Addresses.Commands
         public class Handler : IRequestHandler<Command, Result<int>>
         {
             private readonly IDataContext _context;
-            private readonly IValidator<Command> _validator;
 
-            public Handler(IDataContext context, IValidator<Command> validator)
+            public Handler(IDataContext context)
             {
                 _context = context;
-                _validator = validator;
             }
 
             public async Task<Result<int>> Handle(
                 Command request,
                 CancellationToken cancellationToken)
             {
-                _validator.Validate(request);
                 _context.Addresses.Add(request.Address);
                 var result = await _context.SaveChangesAsync() > 0;
 

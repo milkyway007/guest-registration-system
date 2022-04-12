@@ -16,10 +16,12 @@ namespace Application.Core
             .ForMember(dest => dest.IsPerson, opt => opt.MapFrom(_ => true));
 
             CreateMap<Person, PersonDto>()
+            .IncludeBase<Participant, ParticipantDto>()
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
 
             CreateMap<Company, CompanyDto>()
+            .IncludeBase<Participant, ParticipantDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
             CreateMap<Participant, Participant>();

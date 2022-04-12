@@ -23,7 +23,7 @@ namespace Tests.Application.Addresses
         public void SetUp()
         {
             _dataContext = new Mock<IDataContext>();
-            _subject = new Create.Handler(_dataContext.Object, new Mock<IValidator<Create.Command>>().Object);
+            _subject = new Create.Handler(_dataContext.Object);
         }
 
         [Test]

@@ -1,5 +1,4 @@
 ﻿using Application.Core;
-using Application.Events.Validators;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;

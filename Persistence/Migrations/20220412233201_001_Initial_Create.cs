@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class _001_Initial_create : Migration
+    public partial class _001_Initial_Create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,37 +13,33 @@ namespace Persistence.Migrations
                 name: "addresses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Zip = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Line1 = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     Line2 = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
                     City = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     State = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
-                    Zip = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Modified = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_addresses", x => x.Id);
+                    table.PrimaryKey("PK_addresses", x => x.Zip);
                 });
 
             migrationBuilder.CreateTable(
                 name: "participants",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    PaymentMethod = table.Column<int>(type: "INTEGER", nullable: false),
                     Code = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    PaymentMethod = table.Column<int>(type: "INTEGER", nullable: false),
                     IsPerson = table.Column<bool>(type: "INTEGER", nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Modified = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_participants", x => x.Id);
+                    table.PrimaryKey("PK_participants", x => x.Code);
                 });
 
             migrationBuilder.CreateTable(
@@ -55,7 +51,7 @@ namespace Persistence.Migrations
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Occurrence = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
-                    AddressId = table.Column<int>(type: "INTEGER", nullable: false),
+                    AddressZip = table.Column<string>(type: "TEXT", nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Modified = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
@@ -63,10 +59,10 @@ namespace Persistence.Migrations
                 {
                     table.PrimaryKey("PK_events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_events_addresses_AddressId",
-                        column: x => x.AddressId,
+                        name: "FK_events_addresses_AddressZip",
+                        column: x => x.AddressZip,
                         principalTable: "addresses",
-                        principalColumn: "Id",
+                        principalColumn: "Zip",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -74,20 +70,19 @@ namespace Persistence.Migrations
                 name: "companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     ParticipantCount = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 5000, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_companies", x => x.Id);
+                    table.PrimaryKey("PK_companies", x => x.Code);
                     table.ForeignKey(
-                        name: "FK_companies_participants_Id",
-                        column: x => x.Id,
+                        name: "FK_companies_participants_Code",
+                        column: x => x.Code,
                         principalTable: "participants",
-                        principalColumn: "Id",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -95,20 +90,19 @@ namespace Persistence.Migrations
                 name: "persons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    Code = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1500, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_persons", x => x.Id);
+                    table.PrimaryKey("PK_persons", x => x.Code);
                     table.ForeignKey(
-                        name: "FK_persons_participants_Id",
-                        column: x => x.Id,
+                        name: "FK_persons_participants_Code",
+                        column: x => x.Code,
                         principalTable: "participants",
-                        principalColumn: "Id",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -117,12 +111,11 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     EventId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ParticipantId = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsPerson = table.Column<bool>(type: "INTEGER", nullable: false)
+                    ParticipantCode = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_event_participants", x => new { x.EventId, x.ParticipantId });
+                    table.PrimaryKey("PK_event_participants", x => new { x.EventId, x.ParticipantCode });
                     table.ForeignKey(
                         name: "FK_event_participants_events_EventId",
                         column: x => x.EventId,
@@ -130,18 +123,12 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_event_participants_participants_ParticipantId",
-                        column: x => x.ParticipantId,
+                        name: "FK_event_participants_participants_ParticipantCode",
+                        column: x => x.ParticipantCode,
                         principalTable: "participants",
-                        principalColumn: "Id",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_addresses_Zip",
-                table: "addresses",
-                column: "Zip",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_companies_Name",
@@ -150,20 +137,14 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_event_participants_ParticipantId",
+                name: "IX_event_participants_ParticipantCode",
                 table: "event_participants",
-                column: "ParticipantId");
+                column: "ParticipantCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_events_AddressId",
+                name: "IX_events_AddressZip",
                 table: "events",
-                column: "AddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_participants_Code",
-                table: "participants",
-                column: "Code",
-                unique: true);
+                column: "AddressZip");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

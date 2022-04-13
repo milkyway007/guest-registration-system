@@ -17,14 +17,6 @@ namespace Application.Events.Queries
             public int EventId { get; set; }
         }
 
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.EventId).GreaterThan(0);
-            }
-        }
-
         public class Handler : IRequestHandler<Query, Result<List<PersonDto>>>
         {
             private readonly IDataContext _context;
@@ -53,9 +45,14 @@ namespace Application.Events.Queries
                 var personDtoQuery = _extensionsAbstraction.ProjectTo<PersonDto>(
                     personQuery, _mapper.ConfigurationProvider).AsQueryable().OrderBy(x => x.FirstName);
 
+                var personDtoList = await _eFextensionsAbstraction
+                        .ToListAsync(personDtoQuery, cancellationToken);
+
+                personDtoList.ForEach(x => x.EventId = request.EventId);
+
                 return Result<List<PersonDto>>.Success
                     (
-                        await _eFextensionsAbstraction.ToListAsync(personDtoQuery, cancellationToken)
+                        personDtoList
                     );
             }
         }

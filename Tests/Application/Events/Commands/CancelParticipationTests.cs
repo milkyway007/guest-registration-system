@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace Tests.Application.Events
 {
     [TestFixture]
@@ -31,11 +32,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -63,7 +64,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 2,
-                ParticipantId = 1,
+                ParticipantCode = "1",
             };
 
             //Act
@@ -79,11 +80,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -111,7 +112,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 1,
-                ParticipantId = 3,
+                ParticipantCode = "3",
             };
 
             //Act
@@ -127,11 +128,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -161,7 +162,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 1,
-                ParticipantId = 1,
+                ParticipantCode = "1",
             };
 
             //Act
@@ -170,7 +171,7 @@ namespace Tests.Application.Events
             //Assert
             Assert.False(eventList
                 .FirstOrDefault(x => x.Id == 1)
-                .Participants.Any(x => x.ParticipantId == 1));
+                .Participants.Any(x => x.ParticipantCode == "1"));
         }
 
         [Test]
@@ -179,11 +180,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -213,7 +214,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 1,
-                ParticipantId = 1,
+                ParticipantCode = "1",
             };
 
             //Act
@@ -229,11 +230,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -263,7 +264,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 1,
-                ParticipantId = 1,
+                ParticipantCode = "1",
             };
 
             //Act
@@ -280,11 +281,11 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
+                Code = "1",
             };
             var company = new Company
             {
-                Id = 2,
+                Code = "2",
             };
             var participantList = new List<EventParticipant>
             {
@@ -314,7 +315,7 @@ namespace Tests.Application.Events
             var command = new CancelParticipation.Command
             {
                 EventId = 1,
-                ParticipantId = 1,
+                ParticipantCode = "1",
             };
 
             //Act
@@ -326,3 +327,4 @@ namespace Tests.Application.Events
         }
     }
 }
+

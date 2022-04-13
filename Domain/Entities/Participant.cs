@@ -7,6 +7,5 @@ namespace Domain.Entities
         public PaymentMethod PaymentMethod { get; set; }
         public ICollection<EventParticipant> Events { get; set; }
         public string Code { get; set; }
-        public bool IsPerson { get; set; }
     }
 }

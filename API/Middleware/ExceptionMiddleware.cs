@@ -16,9 +16,9 @@ namespace API.Middleware
             ILogger<ExceptionMiddleware> logger,
             IHostEnvironment env)
         {
+            _next = next;
             _env = env;
             _logger = logger;
-            _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)

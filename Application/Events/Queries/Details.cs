@@ -13,14 +13,6 @@ namespace Application.Events.Queries
             public int Id { get; set; }
         }
 
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.Id).GreaterThan(0);
-            }
-        }
-
         public class Handler : IRequestHandler<Query, Result<Event>>
         {
             private readonly IDataContext _context;

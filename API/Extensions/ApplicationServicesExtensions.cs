@@ -1,10 +1,11 @@
 ﻿using Application.Core;
-using Application.Events.Queries;
+using Application.Events.Commands;
 using Application.Interfaces.Core;
+using FluentValidation;
 using MediatR;
-using Microsoft.OpenApi.Models;
 using Persistence;
 using Persistence.Interfaces;
+using static Application.Events.Commands.Create;
 
 namespace API.Extensions
 {
@@ -14,15 +15,13 @@ namespace API.Extensions
             this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            });
+            services.AddSwaggerGen();
             services.AddDbContext<DataContext>();
             services.AddScoped<IDataContext, DataContext>(
                 provider => provider.GetService<DataContext>());
-            services.AddMediatR(typeof(List.Handler).Assembly);
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddMediatR(typeof(Create).Assembly);
+            //services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped
                 <IEntityFrameworkQueryableExtensionsAbstraction, EntityFrameworkQueryableExtensionsAbstraction>();

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace Tests.Application.Participants
 {
     [TestFixture]
@@ -37,12 +38,12 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
             };
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
                 .Returns(null);
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
 
@@ -50,7 +51,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 }
             };
 
@@ -58,7 +59,7 @@ namespace Tests.Application.Participants
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            eventSet.Verify(e => e.FindAsync(It.IsAny<int>()), Times.Once);
+            eventSet.Verify(e => e.FindAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -69,7 +70,7 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
             };
 
@@ -82,7 +83,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 }
             };
 
@@ -101,16 +102,16 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
                 new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 },
             };
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
                 .Returns(new ValueTask<Participant>(eventList[1]));
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -120,7 +121,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 }
             };
 
@@ -139,16 +140,16 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
                 new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 },
             };
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
                 .Returns(new ValueTask<Participant>(eventList[1]));
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -158,7 +159,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 }
             };
 
@@ -177,16 +178,16 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
                 new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 },
             };
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
                 .Returns(new ValueTask<Participant>(eventList[1]));
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -196,7 +197,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 }
             };
 
@@ -216,16 +217,16 @@ namespace Tests.Application.Participants
             {
                 new Company
                 {
-                    Id = 1,
+                    Code = "1",
                 },
                 new Company
                 {
-                    Id = 2,
+                    Code = "2",
                 },
             };
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
                 .Returns(new ValueTask<Participant>(eventList[1]));
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -235,7 +236,7 @@ namespace Tests.Application.Participants
             {
                 Participant = new Company
                 {
-                    Id = 1,
+                    Code = "2",
                 }
             };
 
@@ -248,3 +249,4 @@ namespace Tests.Application.Participants
         }
     }
 }
+

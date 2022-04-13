@@ -1,4 +1,5 @@
-﻿using Application.Core;
+﻿using Application.Addresses.Validators;
+using Application.Core;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -8,7 +9,7 @@ namespace Application.Addresses.Commands
 {
     public class Create
     {
-        public class Command : IRequest<Result<int>>
+        public class Command : IRequest<Result<string>>
         {
             public Address Address { get; set; }
         }
@@ -17,11 +18,11 @@ namespace Application.Addresses.Commands
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Address).NotEmpty();
+                RuleFor(x => x.Address).SetValidator(new AddressValidator());
             }
         }
 
-        public class Handler : IRequestHandler<Command, Result<int>>
+        public class Handler : IRequestHandler<Command, Result<string>>
         {
             private readonly IDataContext _context;
 
@@ -30,7 +31,7 @@ namespace Application.Addresses.Commands
                 _context = context;
             }
 
-            public async Task<Result<int>> Handle(
+            public async Task<Result<string>> Handle(
                 Command request,
                 CancellationToken cancellationToken)
             {
@@ -39,10 +40,10 @@ namespace Application.Addresses.Commands
 
                 if (!result)
                 {
-                    return Result<int>.Failure("Failed to create address.");
+                    return Result<string>.Failure("Failed to create address.");
                 }
 
-                return Result<int>.Success(request.Address.Id);
+                return Result<string>.Success(request.Address.Zip);
             }
         }
     }

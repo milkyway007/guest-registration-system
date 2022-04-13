@@ -11,16 +11,7 @@ namespace Application.Events.Commands
         public class Command : IRequest<Result<Unit>>
         {
             public int EventId { get; set; }
-            public int ParticipantId { get; set; }
-        }
-
-        public class CommandValidator : AbstractValidator<Command>
-        {
-            public CommandValidator()
-            {
-                RuleFor(x => x.EventId).GreaterThan(0);
-                RuleFor(x => x.ParticipantId).GreaterThan(0);
-            }
+            public string ParticipantCode { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -43,7 +34,7 @@ namespace Application.Events.Commands
                     return null;
                 }
 
-                var participant = e.Participants.FirstOrDefault(x => x.Participant.Id == request.ParticipantId);
+                var participant = e.Participants.FirstOrDefault(x => x.Participant.Code == request.ParticipantCode);
                 if (participant == null)
                 {
                     return null;

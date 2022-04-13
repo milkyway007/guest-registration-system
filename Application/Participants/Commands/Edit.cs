@@ -1,4 +1,5 @@
 ﻿using Application.Core;
+using Application.Events.Validators;
 using AutoMapper;
 using Domain.Entities;
 using FluentValidation;
@@ -18,7 +19,11 @@ namespace Application.Participants.Commands
         {
             public CommandValidator()
             {
-                RuleFor(x => x.Participant).NotEmpty();
+                When(x => x.Participant is Person, () => {
+                    RuleFor(x => (Person)x.Participant).SetValidator(new PersonValidator());
+                }).Otherwise(() => {
+                    RuleFor(x => (Company)x.Participant).SetValidator(new CompanyValidator());
+                });
             }
         }
 
@@ -35,7 +40,7 @@ namespace Application.Participants.Commands
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var participant = await _context.Participants.FindAsync(request.Participant.Id);
+                var participant = await _context.Participants.FindAsync(request.Participant.Code);
                 if (participant == null)
                 {
                     return null;

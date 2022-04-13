@@ -2,26 +2,25 @@
 using Application.Participants.Queries;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Participants.Events;
 
 namespace API.Controllers
 {
     public class ParticipantsController : BaseApiController
     {
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Participant>> GetParticipant(int id)
+        [HttpGet("{code}")]
+        public async Task<ActionResult<Participant>> GetParticipant(string code)
         {
             return HandleResult(await Mediator.Send(
                 new Details.Query
                 {
-                    Id = id
+                    Code = code
                 }));
         }
 
-        [HttpPut("persons/{id}")]
-        public async Task<IActionResult> EditParticipant(int id, Person participant)
+        [HttpPut("persons/{code}")]
+        public async Task<IActionResult> EditParticipant(string code, Person participant)
         {
-            participant.Id = id;
+            participant.Code = code;
             return HandleResult(await Mediator.Send(
                 new Edit.Command
                 {
@@ -29,10 +28,10 @@ namespace API.Controllers
                 }));
         }
 
-        [HttpPut("companies/{id}")]
-        public async Task<IActionResult> EditCompanies(int id, Company participant)
+        [HttpPut("companies/{code}")]
+        public async Task<IActionResult> EditCompanies(string code, Company participant)
         {
-            participant.Id = id;
+            participant.Code = code;
             return HandleResult(await Mediator.Send(
                 new Edit.Command
         {

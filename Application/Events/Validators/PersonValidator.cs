@@ -7,7 +7,7 @@ namespace Application.Events.Validators
 {
     public class PersonValidator : ParticipantValidator<Person>
     {
-        public PersonValidator(IDataContext dataContext) : base(dataContext)
+        public PersonValidator()
         {
             RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
             RuleFor(x => x.LastName).NotEmpty().MaximumLength(50);

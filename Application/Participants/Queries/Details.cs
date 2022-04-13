@@ -10,15 +10,7 @@ namespace Application.Participants.Queries
     {
         public class Query : IRequest<Result<Participant>>
         {
-            public int Id { get; set; }
-        }
-
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.Id).GreaterThan(0);
-            }
+            public string Code { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result<Participant>>
@@ -34,7 +26,7 @@ namespace Application.Participants.Queries
                 Query request,
                 CancellationToken cancellationToken)
             {
-                return Result<Participant>.Success(await _context.Participants.FindAsync(request.Id));
+                return Result<Participant>.Success(await _context.Participants.FindAsync(request.Code));
             }
         }
     }

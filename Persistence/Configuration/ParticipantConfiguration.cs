@@ -10,10 +10,9 @@ namespace Persistence.Configuration
         {
             builder.ToTable(Constants.PARTICIPANTS);
 
+            builder.HasKey(i => i.Code);
             builder.Property(b => b.Code).IsRequired().HasMaxLength(50);
             builder.Property(b => b.PaymentMethod).IsRequired().HasConversion<int>();
-
-            builder.HasIndex(u => u.Code).IsUnique();
         }
     }
 }

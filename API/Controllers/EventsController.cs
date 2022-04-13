@@ -95,14 +95,14 @@ namespace API.Controllers
                 }));
         }
 
-        [HttpDelete("{eventId}/participants/{participantId}")]
-        public async Task<IActionResult> CancelParticipation(int eventId, int participantId)
+        [HttpDelete("{eventId}/participants/{participantCode}")]
+        public async Task<IActionResult> CancelParticipation(int eventId, string participantCode)
         {
             return HandleResult(await Mediator.Send(
                 new CancelParticipation.Command
                 {
                     EventId = eventId,
-                    ParticipantId = participantId
+                    ParticipantCode = participantCode
                 }));
         }
     }

@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220412140742_001_Initial_create")]
-    partial class _001_Initial_create
+    [Migration("20220413002238_002_Remove_IsPerson_Participant")]
+    partial class _002_Remove_IsPerson_Participant
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,9 +21,9 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Address", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Zip")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -54,15 +54,7 @@ namespace Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Zip")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Zip")
-                        .IsUnique();
+                    b.HasKey("Zip");
 
                     b.ToTable("addresses", (string)null);
                 });
@@ -73,8 +65,9 @@ namespace Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("AddressZip")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
@@ -96,7 +89,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("AddressZip");
 
                     b.ToTable("events", (string)null);
                 });
@@ -106,35 +99,24 @@ namespace Persistence.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ParticipantId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ParticipantCode")
+                        .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsPerson")
-                        .HasColumnType("INTEGER");
+                    b.HasKey("EventId", "ParticipantCode");
 
-                    b.HasKey("EventId", "ParticipantId");
-
-                    b.HasIndex("ParticipantId");
+                    b.HasIndex("ParticipantCode");
 
                     b.ToTable("event_participants", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Participant", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsPerson")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Modified")
                         .HasColumnType("TEXT");
@@ -142,10 +124,7 @@ namespace Persistence.Migrations
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
+                    b.HasKey("Code");
 
                     b.ToTable("participants", (string)null);
                 });
@@ -197,7 +176,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.Address", "Address")
                         .WithMany("Events")
-                        .HasForeignKey("AddressId")
+                        .HasForeignKey("AddressZip")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -214,7 +193,7 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.Entities.Participant", "Participant")
                         .WithMany("Events")
-                        .HasForeignKey("ParticipantId")
+                        .HasForeignKey("ParticipantCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -227,7 +206,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.Participant", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Company", "Id")
+                        .HasForeignKey("Domain.Entities.Company", "Code")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -236,7 +215,7 @@ namespace Persistence.Migrations
                 {
                     b.HasOne("Domain.Entities.Participant", null)
                         .WithOne()
-                        .HasForeignKey("Domain.Entities.Person", "Id")
+                        .HasForeignKey("Domain.Entities.Person", "Code")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

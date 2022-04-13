@@ -1,4 +1,6 @@
 ﻿using Application.Core;
+using Application.Events.Validators;
+using Application.Interfaces.Core;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -17,41 +19,27 @@ namespace Application.Events.Commands
 
         public class CommandValidator : AbstractValidator<Command>
         {
-            private readonly IDataContext _context;
-
-            public CommandValidator(IDataContext context)
+            public CommandValidator()
             {
-                _context = context;
-
-                RuleFor(x => x.Participant.Code).Must(UniqueCode);
-                RuleFor(x => ((Company)x.Participant).Name).Must(UniqueName).When(x => x.Participant is Company);
-            }
-
-            private bool UniqueCode(string code)
-            {
-                var dbParticipant = _context.Participants.Where(x => x.Code.ToLower() == code.ToLower())
-                                    .SingleOrDefault();
-
-                return dbParticipant == null;
-            }
-
-            private bool UniqueName(string value)
-            {
-                var dbParticipant = _context.Participants.Where(x => x is Company).Cast<Company>()
-                                    .Where(x => x.Name.ToLower() == value.ToLower())
-                                    .SingleOrDefault();
-
-                return dbParticipant == null;
+                When(x => x.Participant is Person, () => {
+                    RuleFor(x => (Person)x.Participant).SetValidator(new PersonValidator());
+                }).Otherwise(() => {
+                    RuleFor(x => (Company)x.Participant).SetValidator(new CompanyValidator());
+                });
             }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly IDataContext _context;
+            private readonly IEntityFrameworkQueryableExtensionsAbstraction _eFExtensionsAbstraction;
 
-            public Handler(IDataContext context)
+            public Handler(
+                IDataContext context,
+                IEntityFrameworkQueryableExtensionsAbstraction eFExtensionsAbstraction)
             {
                 _context = context;
+                _eFExtensionsAbstraction = eFExtensionsAbstraction;
             }
 
             public async Task<Result<Unit>> Handle(
@@ -65,22 +53,27 @@ namespace Application.Events.Commands
                     return null;
                 }
 
-                var participant = e.Participants
+                var eventParticipant = e.Participants
                     .FirstOrDefault(x => x.Participant.Code == request.Participant.Code);
-                if (participant != null)
+                if (eventParticipant != null)
                 {
                     return Result<Unit>
                         .Failure("Participant with same code has already been registered to event.");
                 }
 
-                var eventParticipant = new EventParticipant
+                var participant = await _context.Participants.FindAsync(request.Participant.Code);
+                if (participant == null)
                 {
-                    Event = e,
-                    Participant = request.Participant,
+                    participant = await _eFExtensionsAbstraction.AddAsync(request.Participant, _context.Participants);
+                }
+
+                var newEventParticipant = new EventParticipant
+                {
+                    EventId = e.Id,
+                    ParticipantCode = request.Participant.Code,
                 };
 
-                _context.Participants.Add(request.Participant);
-                e.Participants.Add(eventParticipant);
+                e.Participants.Add(newEventParticipant);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 return result ?

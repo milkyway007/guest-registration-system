@@ -1,7 +1,10 @@
 ﻿using Application.Events.Commands;
+using Application.Interfaces.Core;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -11,6 +14,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+
 namespace Tests.Application.Events
 {
     [TestFixture]
@@ -18,12 +22,16 @@ namespace Tests.Application.Events
     {
         private CreateParticipation.Handler _subject;
         private Mock<IDataContext> _dataContext;
+        private Mock<IEntityFrameworkQueryableExtensionsAbstraction> _eFExtensionsAbstraction;
 
         [SetUp]
         public void SetUp()
         {
+            _eFExtensionsAbstraction = new Mock<IEntityFrameworkQueryableExtensionsAbstraction>();
             _dataContext = new Mock<IDataContext>();
-            _subject = new CreateParticipation.Handler(_dataContext.Object);
+            _subject = new CreateParticipation.Handler(
+                _dataContext.Object,
+                _eFExtensionsAbstraction.Object);
         }
 
         [Test]
@@ -32,12 +40,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -68,7 +74,6 @@ namespace Tests.Application.Events
                 EventId = 2,
                 Participant = new Person
                 {
-                    Id = 3,
                     Code = "A",
                 },
             };
@@ -86,12 +91,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -121,6 +124,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()))
+                .Returns(Task.FromResult(participants[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
 
@@ -129,7 +136,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Person
                 {
-                    Id = 1,
                     Code = "A",
                 }
             };
@@ -148,12 +154,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var eventParticipants = new List<EventParticipant>
@@ -183,6 +187,7 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
 
@@ -191,7 +196,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Company
                 {
-                    Id = 3,
                     Code = "A",
                 }
             };
@@ -200,7 +204,9 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            participantSet.Verify(x => x.Add(It.IsAny<Participant>()), Times.Once);
+            _eFExtensionsAbstraction.Verify(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()), Times.Once);
         }
 
         [Test]
@@ -209,12 +215,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -244,6 +248,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()))
+                .Returns(Task.FromResult(participants[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -254,7 +262,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Company
                 {
-                    Id = 3,
                     Code = "A",
                 },
             };
@@ -265,7 +272,7 @@ namespace Tests.Application.Events
             //Assert
             Assert.True(eventList
                 .FirstOrDefault(x => x.Id == 1)
-                .Participants.Any(x => x.Participant.Id == 3));
+                .Participants.Any(x => x.ParticipantCode == "A"));
         }
 
         [Test]
@@ -274,12 +281,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -309,6 +314,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()))
+                .Returns(Task.FromResult(participants[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -319,7 +328,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Company
                 {
-                    Id = 3,
                     Code = "A",
                 },
             };
@@ -337,12 +345,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -372,6 +378,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()))
+                .Returns(Task.FromResult(participants[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -382,7 +392,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Company
                 {
-                    Id = 3,
                     Code = "A",
                 },
             };
@@ -401,12 +410,10 @@ namespace Tests.Application.Events
             //Arrange
             var person = new Person
             {
-                Id = 1,
                 Code = "B",
             };
             var company = new Company
             {
-                Id = 2,
                 Code = "C",
             };
             var participantList = new List<EventParticipant>
@@ -436,6 +443,10 @@ namespace Tests.Application.Events
 
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(
+                It.IsAny<Participant>(),
+                It.IsAny<DbSet<Participant>>()))
+                .Returns(Task.FromResult(participants[1]));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
@@ -446,7 +457,6 @@ namespace Tests.Application.Events
                 EventId = 1,
                 Participant = new Company
                 {
-                    Id = 3,
                     Code = "A",
                 },
             };

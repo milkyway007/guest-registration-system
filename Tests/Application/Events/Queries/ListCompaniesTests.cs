@@ -46,7 +46,7 @@ namespace Tests.Application.Events
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, null, _ => { });
+            SetUpMocks(companyDtoList, eventParticipantList, new List<CompanyDto>(), _ => { });
             var query = CreateQuery();
 
             //Act
@@ -63,7 +63,7 @@ namespace Tests.Application.Events
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, null, _ => { });
+            SetUpMocks(companyDtoList, eventParticipantList, new List<CompanyDto>(), _ => { });
             var query = CreateQuery();
             
             //Act
@@ -71,7 +71,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.Null(actual.Value);
+            Assert.IsEmpty(actual.Value);
         }
 
         [Test]

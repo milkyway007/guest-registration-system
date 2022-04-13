@@ -17,7 +17,7 @@ namespace Persistence.Configuration
             builder
                 .HasOne(ev => ev.Address)
                 .WithMany(address => address.Events)
-                .HasForeignKey(ev => ev.AddressId)
+                .HasForeignKey(ev => ev.AddressZip)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

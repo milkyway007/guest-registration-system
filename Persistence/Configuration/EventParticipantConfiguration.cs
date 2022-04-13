@@ -10,7 +10,7 @@ namespace Persistence.Configuration
         {
             builder.ToTable(Constants.EVENT_PARTICIPANTS);
 
-            builder.HasKey(x => new {x.EventId, x.ParticipantId});
+            builder.HasKey(x => new {x.EventId, x.ParticipantCode});
 
             builder
                 .HasOne(ep => ep.Event)
@@ -22,7 +22,7 @@ namespace Persistence.Configuration
             builder
                 .HasOne(ep => ep.Participant)
                 .WithMany(participant => participant.Events)
-                .HasForeignKey(ev => ev.ParticipantId)
+                .HasForeignKey(ev => ev.ParticipantCode)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

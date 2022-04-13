@@ -10,6 +10,7 @@ namespace Persistence.Configuration
         {
             builder.ToTable(Constants.ADDRESSES);
 
+            builder.HasKey(i => i.Zip);
             builder.Property(b => b.Line1).IsRequired().HasMaxLength(250);
             builder.Property(b => b.Line2).HasMaxLength(250);
             builder.Property(b => b.City).IsRequired().HasMaxLength(50);
@@ -17,12 +18,10 @@ namespace Persistence.Configuration
             builder.Property(b => b.Zip).IsRequired().HasMaxLength(50);
             builder.Property(b => b.Country).IsRequired().HasMaxLength(50);
 
-            builder.HasIndex(u => u.Zip).IsUnique();
-
             builder
                 .HasMany(address => address.Events)
                 .WithOne(ev => ev.Address)
-                .HasForeignKey(ev => ev.AddressId);
+                .HasForeignKey(ev => ev.AddressZip);
         }
     }
 }

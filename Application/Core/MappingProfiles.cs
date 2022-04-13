@@ -8,12 +8,14 @@ namespace Application.Core
     {
         public MappingProfiles()
         {
-            CreateMap<Event,Event>();
+            CreateMap<Entity, Entity>()
+            .ForMember(dest => dest.Created, opt => opt.Ignore());
+
+            CreateMap<Event,Event>()
+                .IncludeBase<Entity, Entity>();
 
             CreateMap<Participant, ParticipantDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code))
-            .ForMember(dest => dest.IsPerson, opt => opt.MapFrom(_ => true));
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code));
 
             CreateMap<Person, PersonDto>()
             .IncludeBase<Participant, ParticipantDto>()
@@ -24,7 +26,8 @@ namespace Application.Core
             .IncludeBase<Participant, ParticipantDto>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 
-            CreateMap<Participant, Participant>();
+            CreateMap<Participant, Participant>()
+            .IncludeBase<Entity, Entity>();
             CreateMap<Person, Person>()
               .IncludeBase<Participant, Participant>();
             CreateMap<Company, Company>()

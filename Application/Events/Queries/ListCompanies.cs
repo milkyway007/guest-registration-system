@@ -17,14 +17,6 @@ namespace Application.Events.Queries
             public int EventId { get; set; }
         }
 
-        public class QueryValidator : AbstractValidator<Query>
-        {
-            public QueryValidator()
-            {
-                RuleFor(x => x.EventId).GreaterThan(0);
-            }
-        }
-
         public class Handler : IRequestHandler<Query, Result<List<CompanyDto>>>
         {
             private readonly IDataContext _context;
@@ -48,14 +40,20 @@ namespace Application.Events.Queries
                 Query request, CancellationToken cancellationToken)
             {
                 var companyQuery = _context.EventParticipants.Where(x => x.Event.Id == request.EventId)
-                    .Include(x => x.Participant).Select(x => x.Participant).OfType<Company>();
-                    
+                    .Include(x => x.Participant)
+                    .Select(x => x.Participant).OfType<Company>();
+
                 var companyDtoQuery = _extensionsAbstraction.ProjectTo<CompanyDto>(
-                    companyQuery, _mapper.ConfigurationProvider).AsQueryable().OrderBy(x => x.Name);
+                    companyQuery, _mapper.ConfigurationProvider).OrderBy(x => x.Name);
+
+                var companyDtoList = await _eFextensionsAbstraction
+                        .ToListAsync(companyDtoQuery, cancellationToken);
+
+                companyDtoList.ForEach(x => x.EventId = request.EventId);
 
                 return Result<List<CompanyDto>>.Success
                     (
-                        await _eFextensionsAbstraction.ToListAsync(companyDtoQuery, cancellationToken)
+                        companyDtoList
                     );
             }
         }

@@ -10,7 +10,7 @@ namespace Application.Events.Validators
             RuleFor(x => x.Name).NotEmpty().MaximumLength(50);
             RuleFor(x => x.Description).MaximumLength(1000);
             RuleFor(x => x.Occurrence).GreaterThan(DateTime.Now);
-            RuleFor(x => x.AddressId).GreaterThan(0);
+            RuleFor(x => x.AddressZip).MaximumLength(50);
         }
     }
 }

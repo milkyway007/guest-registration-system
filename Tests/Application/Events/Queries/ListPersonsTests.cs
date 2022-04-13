@@ -70,7 +70,7 @@ namespace Tests.Application.Events
             SetUpMocks(
                 personDtoList,
                 eventParticipantList,
-                null,
+                new List<PersonDto>(),
                 e => { });
             var query = CreateQuery();
 
@@ -79,7 +79,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.Null(actual.Value);
+            Assert.IsEmpty(actual.Value);
         }
 
         [Test]

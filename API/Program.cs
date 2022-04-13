@@ -3,13 +3,17 @@ using Microsoft.EntityFrameworkCore;
 using API.Extensions;
 using API.Middleware;
 using FluentValidation.AspNetCore;
+using static Application.Events.Commands.Create;
 using Application.Events.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers().AddFluentValidation(config =>
-            config.RegisterValidatorsFromAssemblyContaining<Create>());
+{
+    config.RegisterValidatorsFromAssemblyContaining<Create>();
+}
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddApplicationServices();
 

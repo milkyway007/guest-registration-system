@@ -1,8 +1,11 @@
 ﻿using Application.Core;
-using Application.Events;
-using FluentValidation.AspNetCore;
+using Application.Events.Commands;
+using Application.Interfaces.Core;
+using FluentValidation;
 using MediatR;
 using Persistence;
+using Persistence.Interfaces;
+using static Application.Events.Commands.Create;
 
 namespace API.Extensions
 {
@@ -14,10 +17,15 @@ namespace API.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddDbContext<DataContext>();
-            services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddScoped<IDataContext, DataContext>(
+                provider => provider.GetService<DataContext>());
+            services.AddMediatR(typeof(Create).Assembly);
+            //services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-            services.AddControllers().AddFluentValidation(config =>
-            config.RegisterValidatorsFromAssemblyContaining<Create>());
+            services.AddScoped
+                <IEntityFrameworkQueryableExtensionsAbstraction, EntityFrameworkQueryableExtensionsAbstraction>();
+            services.AddScoped<IQueryableExtensionsAbstraction, QueryableExtensionsAbstraction>();
 
             return services;
         }

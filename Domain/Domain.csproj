@@ -8,4 +8,12 @@
 	-->
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="EventAddress.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Constants\Constants.csproj" />
+  </ItemGroup>
+
 </Project>

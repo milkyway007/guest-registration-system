@@ -1,5 +1,6 @@
-﻿using Application.Events;
-using Domain;
+﻿using Application.Events.Commands;
+using Application.Events.Queries;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,47 +16,94 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-            return HandleResult(await Mediator.Send(new Details.Query { Id = id}));
+            return HandleResult(await Mediator.Send(
+                new Details.Query
+                {
+                    Id = id
+                }));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateEvent(Event e)
         {
-            return HandleResult(await Mediator.Send(new Create.Command { Event = e}));
+            return HandleResult(await Mediator.Send(
+                new Create.Command
+                {
+                    Event = e
+                }));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> EditEvent(int id, Event e)
         {
             e.Id = id;
-            return HandleResult(await Mediator.Send(new Edit.Command { Event = e }));
+            return HandleResult(await Mediator.Send(
+                new Edit.Command
+                {
+                    Event = e
+                }));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+            return HandleResult(await Mediator.Send(
+                new Delete.Command {
+                    Id = id
+                }));
         }
 
-        [HttpGet("{id}/participants")]
-        public async Task<IActionResult> GetEventParticipants(int id, string predicate)
-        {
-            return HandleResult(await Mediator.Send(new ListParticipants.Query
-            { EventId = id, Predicate = predicate }));
-        }
-
-        [HttpPost("{eventId}/participants")]
-        public async Task<IActionResult> CreateParticipation(int eventId, Participant participant)
+        [HttpGet("{id}/persons")]
+        public async Task<IActionResult> GetPersons(int id)
         {
             return HandleResult(await Mediator.Send(
-                new CreateParticipation.Command { EventId = eventId, Participant = participant }));
+                new ListPersons.Query
+                {
+                    EventId = id
+                }));
         }
 
-        [HttpDelete("{eventId}/participants/{participantId}")]
-        public async Task<IActionResult> CancelParticipation(int eventId, int participantId)
+        [HttpGet("{id}/companies")]
+        public async Task<IActionResult> GetCompanies(int id)
         {
             return HandleResult(await Mediator.Send(
-                new CancelParticipation.Command { EventId = eventId, ParticipantId = participantId }));
+                new ListCompanies.Query
+                {
+                    EventId = id
+                }));
+        }
+
+        [HttpPost("{eventId}/persons")]
+        public async Task<IActionResult> CreatePerson(int eventId, Person person)
+        {
+            return HandleResult(await Mediator.Send(
+                new CreateParticipation.Command
+                {
+                    EventId = eventId,
+                    Participant = person,
+                }));
+        }
+
+        [HttpPost("{eventId}/companies")]
+        public async Task<IActionResult> CreateCompany(int eventId, Company company)
+        {
+            return HandleResult(await Mediator.Send(
+                new CreateParticipation.Command
+                {
+                    EventId = eventId,
+                    Participant = company,
+                }));
+        }
+
+        [HttpDelete("{eventId}/participants/{participantCode}")]
+        public async Task<IActionResult> CancelParticipation(int eventId, string participantCode)
+        {
+            return HandleResult(await Mediator.Send(
+                new CancelParticipation.Command
+                {
+                    EventId = eventId,
+                    ParticipantCode = participantCode
+                }));
         }
     }
 }

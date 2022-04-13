@@ -1,10 +1,13 @@
-﻿using Domain;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Persistence.Configuration;
+using Persistence.Interfaces;
+using System.Data;
 
 namespace Persistence
 {
-    public class DataContext : DbContext
+    public class DataContext : DbContext, IDataContext
     {
         public DataContext(DbContextOptions options) : base(options)
         {
@@ -14,6 +17,20 @@ namespace Persistence
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Event> Events { get; set; }
         public DbSet<EventParticipant> EventParticipants { get; set; }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            AddTimestamps();
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            AddTimestamps();
+
+            return base.SaveChanges();
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -39,20 +56,6 @@ namespace Persistence
             new EventParticipantConfiguration().Configure(builder.Entity<EventParticipant>());
             new PersonConfiguration().Configure(builder.Entity<Person>());
             new ParticipantConfiguration().Configure(builder.Entity<Participant>());
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            AddTimestamps();
-
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
-
-        public override int SaveChanges()
-        {
-            AddTimestamps();
-
-            return base.SaveChanges();
         }
 
         private void AddTimestamps()

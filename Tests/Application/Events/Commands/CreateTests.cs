@@ -88,19 +88,18 @@ namespace Tests.Application.Events
             Assert.False(string.IsNullOrWhiteSpace(actual.Error));
         }
 
-
-        private Create.Command CreateCommand()
+        private IList<Event> CreateEventList()
         {
-            return new Create.Command
+            return new List<Event>
             {
-                Event = new Event
+                new Event
                 {
-                    Id = 2,
-                }
+                    Id = 1,
+                },
             };
         }
 
-        private Mock<DbSet<Event>> SetUpMocks(List<Event> eventList, int saveResult)
+        private Mock<DbSet<Event>> SetUpMocks(IList<Event> eventList, int saveResult)
         {
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
@@ -110,14 +109,14 @@ namespace Tests.Application.Events
             return eventSet;
         }
 
-        private List<Event> CreateEventList()
+        private Create.Command CreateCommand()
         {
-            return new List<Event>
+            return new Create.Command
             {
-                new Event
+                Event = new Event
                 {
-                    Id = 1,
-                },
+                    Id = 2,
+                }
             };
         }
     }

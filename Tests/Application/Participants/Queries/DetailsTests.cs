@@ -1,5 +1,6 @@
 ﻿using Application.Participants.Queries;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-/*
 namespace Tests.Application.Participants
 {
     [TestFixture]
@@ -29,51 +29,31 @@ namespace Tests.Application.Participants
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Id = 1,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(null);
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-
+            var participantList = CreateParticipantList();
+            var eventSet = SetUpMocks(participantList, null);
             var query = new Details.Query
             {
-                Id = 2,
+                Code = "1",
             };
 
             //Act
             var actual = await _subject.Handle(query, new CancellationToken());
 
             //Assert
-            eventSet.Verify(e => e.FindAsync(It.IsAny<int>()), Times.Once);
+            eventSet.Verify(e => e.FindAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_EventNotFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Person
-                {
-                    Id = 1,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(null);
+            var participantList = CreateParticipantList();
+            var eventSet = SetUpMocks(participantList, null);
             _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
 
             var query = new Details.Query
             {
-                Id = 2,
+                Code = "1",
             };
 
             //Act
@@ -88,22 +68,11 @@ namespace Tests.Application.Participants
         public async Task Handle_EventFound_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Person
-                {
-                    Id = 1,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<Participant>(eventList[0]));
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-
+            var participantList = CreateParticipantList();
+            SetUpMocks(participantList, participantList[0]);
             var query = new Details.Query
             {
-                Id = 2,
+                Code = "1",
             };
 
             //Act
@@ -113,6 +82,28 @@ namespace Tests.Application.Participants
             Assert.True(actual.IsSuccess);
             Assert.IsInstanceOf<Participant>(actual.Value);
         }
+
+        private IList<Participant> CreateParticipantList()
+        {
+            return new List<Participant>
+            {
+                new Company
+                {
+                    Code = "1",
+                },
+            };
+        }
+
+        private Mock<DbSet<Participant>> SetUpMocks(
+            IList<Participant> participantList,
+            Participant found)
+        {
+            var eventSet = participantList.AsQueryable().BuildMockDbSet();
+            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
+                .Returns(new ValueTask<Participant>(found));
+            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
+
+            return eventSet;
+        }
     }
 }
-*/

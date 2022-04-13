@@ -11,7 +11,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-/*
 namespace Tests.Application.Addresses
 {
     [TestFixture]
@@ -70,7 +69,7 @@ namespace Tests.Application.Addresses
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<int>(actual.Value);
+            Assert.IsInstanceOf<string>(actual.Value);
         }
 
         [Test]
@@ -89,19 +88,18 @@ namespace Tests.Application.Addresses
             Assert.False(string.IsNullOrWhiteSpace(actual.Error));
         }
 
-
-        private Create.Command CreateCommand()
+        private IList<Address> CreateAddressList()
         {
-            return new Create.Command
+            return new List<Address>
             {
-                Address = new Address
+                new Address
                 {
-                    Id = 2,
-                }
+                    Zip = "2",
+                },
             };
         }
 
-        private Mock<DbSet<Address>> SetUpMocks(List<Address> addressList, int saveResult)
+        private Mock<DbSet<Address>> SetUpMocks(IList<Address> addressList, int saveResult)
         {
             var addressSet = addressList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Addresses).Returns(addressSet.Object);
@@ -111,15 +109,16 @@ namespace Tests.Application.Addresses
             return addressSet;
         }
 
-        private List<Address> CreateAddressList()
+        private Create.Command CreateCommand()
         {
-            return new List<Address>
+            return new Create.Command
             {
-                new Address
+                Address = new Address
                 {
-                    Id = 1,
-                },
+                    Zip = "2",
+                }
             };
         }
+
     }
-}*/
+}

@@ -72,15 +72,18 @@ namespace Tests.Application.Events
             Assert.IsInstanceOf<Event>(actual.Value);
         }
 
-        private static Details.Query CreateQuery()
+        private IList<Event> CreateEventList()
         {
-            return new Details.Query
+            return new List<Event>
             {
-                Id = 2,
+                new Event
+                {
+                    Id = 1,
+                },
             };
         }
 
-        private Mock<DbSet<Event>> SetupDataContext(List<Event> eventList, Event found)
+        private Mock<DbSet<Event>> SetupDataContext(IList<Event> eventList, Event found)
         {
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
@@ -90,14 +93,11 @@ namespace Tests.Application.Events
             return eventSet;
         }
 
-        private static List<Event> CreateEventList()
+        private static Details.Query CreateQuery()
         {
-            return new List<Event>
+            return new Details.Query
             {
-                new Event
-                {
-                    Id = 1,
-                },
+                Id = 2,
             };
         }
     }

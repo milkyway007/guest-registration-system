@@ -31,7 +31,7 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldTryList()
         {
             //Arrange
-            List<Event> eventList = CreateEventList();
+            var eventList = CreateEventList();
             SetUpMocks(eventList, null);
             var query = new List.Query();
 
@@ -47,7 +47,7 @@ namespace Tests.Application.Events
         public async Task Handle_EventsNotFound_ShouldReturnSuccess()
         {
             //Arrange
-            List<Event> eventList = CreateEventList();
+            var eventList = CreateEventList();
             SetUpMocks(eventList, null);
             var query = new List.Query();
 
@@ -63,8 +63,8 @@ namespace Tests.Application.Events
         public async Task Handle_EventsFound_ShouldReturnSuccess()
         {
             //Arrange
-            List<Event> eventList = CreateEventList();
-            SetUpMocks(eventList, eventList);
+            var eventList = CreateEventList();
+            SetUpMocks(eventList, eventList.ToList());
             var query = new List.Query();
 
             //Act
@@ -75,16 +75,7 @@ namespace Tests.Application.Events
             Assert.IsInstanceOf<List<Event>>(actual.Value);
         }
 
-        private void SetUpMocks(List<Event> eventList, List<Event> listed)
-        {
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _extensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(listed));
-        }
-
-        private static List<Event> CreateEventList()
+        private static IList<Event> CreateEventList()
         {
             return new List<Event>
             {
@@ -93,6 +84,15 @@ namespace Tests.Application.Events
                     Id = 1,
                 },
             };
+        }
+
+        private void SetUpMocks(IList<Event> eventList, List<Event> listed)
+        {
+            var eventSet = eventList.AsQueryable().BuildMockDbSet();
+            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
+            _extensionsAbstraction.Setup(x => x.ToListAsync(
+                It.IsAny<IQueryable<Event>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(listed));
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Tests.Application.Events
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, companyDtoList, _ => { });
+            SetUpMocks(companyDtoList, eventParticipantList, companyDtoList.ToList(), _ => { });
             var query = CreateQuery();
 
             //Act
@@ -100,7 +100,7 @@ namespace Tests.Application.Events
             SetUpMocks(
                 companyDtoList,
                 eventParticipantList,
-                companyDtoList,
+                companyDtoList.ToList(),
                 e => VerifyAreSorted(e, x => x.Name));
             var query = CreateQuery();
             
@@ -117,38 +117,7 @@ namespace Tests.Application.Events
             CollectionAssert.AreEqual(arraySorted, list.Select(filterFunc), "Verify dates are sorted");
         }
 
-
-        private ListCompanies.Query CreateQuery()
-        {
-            return new ListCompanies.Query
-            {
-                EventId = 1,
-            };
-        }
-
-        private void SetUpMocks(
-            List<CompanyDto> companyDtoList,
-            List<EventParticipant> eventParticipantList,
-            List<CompanyDto> listed,
-            Action<IEnumerable<CompanyDto>> callback)
-        {
-            var eventParticipantSet = eventParticipantList.AsQueryable().BuildMockDbSet();
-            _dataContext.SetupGet(e => e.EventParticipants).Returns(eventParticipantSet.Object);
-            _extensionsAbstraction.Setup(x => x.ProjectTo(
-                It.IsAny<IQueryable>(),
-                It.IsAny<IConfigurationProvider>(),
-                It.IsAny<Expression<Func<CompanyDto, object>>[]>()))
-                .Returns(companyDtoList.AsQueryable());
-            _eFextensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<CompanyDto>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(listed))
-                .Callback<IQueryable<CompanyDto>, CancellationToken>(
-                //Assert
-                (e, _) => callback(e)
-                );
-        }
-
-        private List<CompanyDto> CreateCompanyDtoList()
+        private IList<CompanyDto> CreateCompanyDtoList()
         {
             return new List<CompanyDto>
             {
@@ -176,6 +145,36 @@ namespace Tests.Application.Events
                 {
                     Name = "QWERTY",
                 },
+            };
+        }
+
+        private void SetUpMocks(
+            IList<CompanyDto> companyDtoList,
+            IList<EventParticipant> eventParticipantList,
+            List<CompanyDto> listed,
+            Action<IEnumerable<CompanyDto>> callback)
+        {
+            var eventParticipantSet = eventParticipantList.AsQueryable().BuildMockDbSet();
+            _dataContext.SetupGet(e => e.EventParticipants).Returns(eventParticipantSet.Object);
+            _extensionsAbstraction.Setup(x => x.ProjectTo(
+                It.IsAny<IQueryable>(),
+                It.IsAny<IConfigurationProvider>(),
+                It.IsAny<Expression<Func<CompanyDto, object>>[]>()))
+                .Returns(companyDtoList.AsQueryable());
+            _eFextensionsAbstraction.Setup(x => x.ToListAsync(
+                It.IsAny<IQueryable<CompanyDto>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(listed))
+                .Callback<IQueryable<CompanyDto>, CancellationToken>(
+                //Assert
+                (e, _) => callback(e)
+                );
+        }
+
+        private ListCompanies.Query CreateQuery()
+        {
+            return new ListCompanies.Query
+            {
+                EventId = 1,
             };
         }
     }

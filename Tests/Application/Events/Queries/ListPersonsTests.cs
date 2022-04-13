@@ -49,7 +49,7 @@ namespace Tests.Application.Events
             SetUpMocks(
                 personDtoList,
                 eventParticipantList,
-                personDtoList,
+                personDtoList.ToList(),
                 e => { });
             var query = CreateQuery();
 
@@ -91,7 +91,7 @@ namespace Tests.Application.Events
             SetUpMocks(
                 personDtoList,
                 eventParticipantList,
-                personDtoList,
+                personDtoList.ToList(),
                 e => { });
             var query = CreateQuery();
 
@@ -112,7 +112,7 @@ namespace Tests.Application.Events
             SetUpMocks(
                 personDtoList,
                 eventParticipantList,
-                personDtoList,
+                personDtoList.ToList(),
                 e => VerifyAreSorted(e, x => x.FirstName));
             var query = CreateQuery();
 
@@ -120,46 +120,7 @@ namespace Tests.Application.Events
             var actual = await _subject.Handle(query, new CancellationToken());
         }
 
-        private void VerifyAreSorted<T>(
-            IEnumerable<PersonDto> list,
-            Func<PersonDto, T> filterFunc)
-        {
-            var arraySorted = list.Select(filterFunc).ToArray();
-            Array.Sort(arraySorted);
-            CollectionAssert.AreEqual(arraySorted, list.Select(filterFunc), "Verify dates are sorted");
-        }
-
-        private ListPersons.Query CreateQuery()
-        {
-            return new ListPersons.Query
-            {
-                EventId = 1,
-            };
-        }
-
-        private void SetUpMocks(
-            List<PersonDto> personDtoList,
-            List<EventParticipant> eventParticipantList,
-            List<PersonDto> listed,
-            Action<IEnumerable<PersonDto>> callback)
-        {
-            var eventParticipantSet = eventParticipantList.AsQueryable().BuildMockDbSet();
-            _dataContext.SetupGet(e => e.EventParticipants).Returns(eventParticipantSet.Object);
-            _extensionsAbstraction.Setup(x => x.ProjectTo(
-                It.IsAny<IQueryable>(),
-                It.IsAny<IConfigurationProvider>(),
-                It.IsAny<Expression<Func<PersonDto, object>>[]>()))
-                .Returns(personDtoList.AsQueryable());
-            _eFextensionsAbstraction.Setup(x => x.ToListAsync(
-                It.IsAny<IQueryable<PersonDto>>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(listed))
-                .Callback<IQueryable<PersonDto>, CancellationToken>(
-                //Assert
-                (e, _) => callback(e)
-                );
-        }
-
-        private List<PersonDto> CreatePersonDtoList()
+        private IList<PersonDto> CreatePersonDtoList()
         {
             return new List<PersonDto>
             {
@@ -188,6 +149,45 @@ namespace Tests.Application.Events
                     FirstName = "QWERTY",
                 },
             };
+        }
+
+        private void SetUpMocks(
+            IList<PersonDto> personDtoList,
+            IList<EventParticipant> eventParticipantList,
+            List<PersonDto> listed,
+            Action<IEnumerable<PersonDto>> callback)
+        {
+            var eventParticipantSet = eventParticipantList.AsQueryable().BuildMockDbSet();
+            _dataContext.SetupGet(e => e.EventParticipants).Returns(eventParticipantSet.Object);
+            _extensionsAbstraction.Setup(x => x.ProjectTo(
+                It.IsAny<IQueryable>(),
+                It.IsAny<IConfigurationProvider>(),
+                It.IsAny<Expression<Func<PersonDto, object>>[]>()))
+                .Returns(personDtoList.AsQueryable());
+            _eFextensionsAbstraction.Setup(x => x.ToListAsync(
+                It.IsAny<IQueryable<PersonDto>>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(listed))
+                .Callback<IQueryable<PersonDto>, CancellationToken>(
+                //Assert
+                (e, _) => callback(e)
+                );
+        }
+
+        private ListPersons.Query CreateQuery()
+        {
+            return new ListPersons.Query
+            {
+                EventId = 1,
+            };
+        }
+
+        private void VerifyAreSorted<T>(
+            IEnumerable<PersonDto> list,
+            Func<PersonDto, T> filterFunc)
+        {
+            var arraySorted = list.Select(filterFunc).ToArray();
+            Array.Sort(arraySorted);
+            CollectionAssert.AreEqual(arraySorted, list.Select(filterFunc), "Verify dates are sorted");
         }
     }
 }

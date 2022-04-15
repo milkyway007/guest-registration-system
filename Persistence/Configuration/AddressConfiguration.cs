@@ -14,7 +14,7 @@ namespace Persistence.Configuration
             builder.Property(b => b.Line1).IsRequired().HasMaxLength(250);
             builder.Property(b => b.Line2).HasMaxLength(250);
             builder.Property(b => b.City).IsRequired().HasMaxLength(50);
-            builder.Property(b => b.State).HasMaxLength(250);
+            builder.Property(b => b.State).HasMaxLength(50);
             builder.Property(b => b.Zip).IsRequired().HasMaxLength(50);
             builder.Property(b => b.Country).IsRequired().HasMaxLength(50);
 

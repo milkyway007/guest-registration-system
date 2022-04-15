@@ -2,6 +2,7 @@
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -30,23 +31,9 @@ namespace Tests.Application.Events
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<Event>
-            {
-                new Event
-                {
-                    Id = 1,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(null);
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-
-            var command = new Delete.Command
-            {
-                Id = 2,
-            };
+            var eventList = CreateEventList();
+            var eventSet = SetUpMocks(eventList, null, 1);
+            var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -59,23 +46,9 @@ namespace Tests.Application.Events
         public async Task Handle_EventNotFound_ShouldReturnNull()
         {
             //Arrange
-            var eventList = new List<Event>
-            {
-                new Event
-                {
-                    Id = 1,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(null);
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-
-            var command = new Delete.Command
-            {
-                Id = 2,
-            };
+            var eventList = CreateEventList();
+            SetUpMocks(eventList, null, 1);
+            var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -88,29 +61,9 @@ namespace Tests.Application.Events
         public async Task Handle_EventFound_ShouldRemove()
         {
             //Arrange
-            var eventList = new List<Event>
-            {
-                new Event
-                {
-                    Id = 1,
-                },
-                new Event
-                {
-                    Id = 2,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<Event>(eventList[1]));
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Delete.Command
-            {
-                Id = 2,
-            };
+            var eventList = CreateEventList();
+            var eventSet = SetUpMocks(eventList, eventList[1], 1);
+            var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -123,29 +76,9 @@ namespace Tests.Application.Events
         public async Task Handle_EventFound_ShouldSaveChanges()
         {
             //Arrange
-            var eventList = new List<Event>
-            {
-                new Event
-                {
-                    Id = 1,
-                },
-                new Event
-                {
-                    Id = 2,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<Event>(eventList[1]));
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Delete.Command
-            {
-                Id = 1,
-            };
+            var eventList = CreateEventList();
+            var eventSet = SetUpMocks(eventList, eventList[1], 1);
+            var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -158,29 +91,9 @@ namespace Tests.Application.Events
         public async Task Handle_ChangesSaved_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<Event>
-            {
-                new Event
-                {
-                    Id = 1,
-                },
-                new Event
-                {
-                    Id = 2,
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<Event>(eventList[1]));
-            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Delete.Command
-            {
-                Id = 1,
-            };
+            var eventList = CreateEventList();
+            var eventSet = SetUpMocks(eventList, eventList[1], 1);
+            var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -194,7 +107,21 @@ namespace Tests.Application.Events
         public async Task Handle_ChangesNotSaved_ShouldReturnFailure()
         {
             //Arrange
-            var eventList = new List<Event>
+            var eventList = CreateEventList();
+            var eventSet = SetUpMocks(eventList, eventList[1], - 1);
+            var command = CreateCommand();
+
+            //Act
+            var actual = await _subject.Handle(command, new CancellationToken());
+
+            //Assert
+            Assert.False(actual.IsSuccess);
+            Assert.False(string.IsNullOrWhiteSpace(actual.Error));
+        }
+
+        private IList<Event> CreateEventList()
+        {
+            return new List<Event>
             {
                 new Event
                 {
@@ -205,25 +132,27 @@ namespace Tests.Application.Events
                     Id = 2,
                 },
             };
+        }
 
+        private Mock<DbSet<Event>> SetUpMocks(IList<Event> eventList, Event found, int saveResult)
+        {
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(new ValueTask<Event>(eventList[1]));
+                .Returns(new ValueTask<Event>(found));
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(-1));
+                .Returns(Task.FromResult(saveResult));
 
-            var command = new Delete.Command
-            {
-                Id = 1,
-            };
-
-            //Act
-            var actual = await _subject.Handle(command, new CancellationToken());
-
-            //Assert
-            Assert.False(actual.IsSuccess);
-            Assert.False(string.IsNullOrWhiteSpace(actual.Error));
+            return eventSet;
         }
+
+        private Delete.Command CreateCommand()
+        {
+            return new Delete.Command
+            {
+                Id = 2,
+            };
+        }
+
     }
 }

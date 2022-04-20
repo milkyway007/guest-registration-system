@@ -17,11 +17,17 @@ namespace API.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
             services.AddDbContext<DataContext>();
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(Constants.CORS_POLICY, policy =>
+                {
+                    policy.AllowAnyMethod().AllowAnyHeader().WithOrigins(Constants.APP_BASE_URI);
+                });
+            });
+
             services.AddScoped<IDataContext, DataContext>(
                 provider => provider.GetService<DataContext>());
             services.AddMediatR(typeof(Create).Assembly);
-            //services.AddValidatorsFromAssembly(typeof(Program).Assembly);
-            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddScoped
                 <IEntityFrameworkQueryableExtensionsAbstraction, EntityFrameworkQueryableExtensionsAbstraction>();

@@ -1,5 +1,6 @@
 ﻿using Application.Addresses.Validators;
 using Application.Core;
+using Application.Interfaces.Core;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -25,17 +26,21 @@ namespace Application.Addresses.Commands
         public class Handler : IRequestHandler<Command, Result<string>>
         {
             private readonly IDataContext _context;
+            private readonly IEntityFrameworkQueryableExtensionsAbstraction _eFExtensionsAbstraction;
 
-            public Handler(IDataContext context)
+            public Handler(
+                IDataContext context,
+                IEntityFrameworkQueryableExtensionsAbstraction eFExtensionsAbstraction)
             {
                 _context = context;
+                _eFExtensionsAbstraction = eFExtensionsAbstraction;
             }
 
             public async Task<Result<string>> Handle(
                 Command request,
                 CancellationToken cancellationToken)
             {
-                _context.Addresses.Add(request.Address);
+                await _eFExtensionsAbstraction.AddAsync(request.Address, _context.Addresses);
                 var result = await _context.SaveChangesAsync() > 0;
 
                 if (!result)

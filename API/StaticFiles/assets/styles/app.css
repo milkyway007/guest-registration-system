@@ -1,0 +1,114 @@
+#main-nav {
+  border-bottom: 1px solid hsl(0, 0%, 86%);
+}
+
+.navbar-item img {
+  max-height: 3rem;
+}
+
+#event-list {
+  list-style: none;
+  max-width: 95%;
+  margin: 1rem 6rem;
+  padding: 0;
+  border-top: 1px solid hsl(0, 0%, 86%);
+}
+
+#event-list li {
+  margin: 0;
+  padding: 1rem 0 3rem 0;
+  border-bottom: 1px solid hsl(0, 0%, 86%);
+}
+
+.event-element_image {
+  width: 300px;
+  margin: 1rem;
+}
+
+.event-element_image img {
+  object-fit: cover;
+  object-position: 0px 0px;
+}
+
+.event-element_info {
+  padding: 1rem;
+}
+
+.event-element_action {
+  padding: 1rem;
+}
+
+.modal {
+  z-index: 200;
+  display: none;
+}
+
+.modal .field {
+  margin-right: 1rem;
+}
+
+#address-zip-validation,
+#address-country-validation,
+#address-city-validation,
+#address-line-1-validation,
+#event-name-validation,
+#event-datetime-validation,
+#person-firstname-validation,
+#person-lastname-validation,
+#person-code-validation,
+#person-payment-method-validation,
+#company-name-validation,
+#company-code-validation,
+#company-payment-method-validation,
+#company-participants-count-validation,
+#company-participant-count-validation {
+  display: none;
+}
+
+#event-title {
+  margin: 0 0 0 0;
+}
+
+#event-subtitle {
+  margin: 0 0 0 0;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+span .text-centered-vertically {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+#participant-list {
+  list-style: none;
+  max-width: 95%;
+  margin: 1rem 6rem;
+  padding: 0;
+  border-top: 1px solid hsl(0, 0%, 86%);
+}
+
+#participant-list li {
+  margin: 0;
+  padding: 0.5rem 0 1.5rem 0;
+  border-bottom: 1px solid hsl(0, 0%, 86%);
+}
+
+.participant-element div {
+  margin-right: 1rem;
+}
+
+.link:hover {
+  color: hsl(217, 71%, 53%) !important;
+}
+
+.warning {
+  z-index: 300;
+}
+
+.transparent {
+  opacity: 0;
+}

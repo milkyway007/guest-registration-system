@@ -1,8 +1,8 @@
 ﻿using Application.Participants.Commands;
 using AutoMapper;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
 using NUnit.Framework;
@@ -34,58 +34,24 @@ namespace Tests.Application.Participants
         public async Task Handle_ShouldTryFind()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Code = "1",
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
-                .Returns(null);
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "1",
-                }
-            };
+            var participants = CreateParticipants();
+            Mock<DbSet<Participant>> participantSet = SetUpMocks(participants, null, -1);
+            var command = CreateCommand("1");
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            eventSet.Verify(e => e.FindAsync(It.IsAny<string>()), Times.Once);
+            participantSet.Verify(e => e.FindAsync(It.IsAny<string>()), Times.Once);
         }
 
         [Test]
         public async Task Handle_EventNotFound_ShouldReturnNull()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Code = "1",
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<int>()))
-                .Returns(null);
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "1",
-                }
-            };
+            var participants = CreateParticipants();
+            SetUpMocks(participants, null, -1);
+            var command = CreateCommand("1");
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -98,32 +64,9 @@ namespace Tests.Application.Participants
         public async Task Handle_EventFound_ShouldMap()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Code = "1",
-                },
-                new Company
-                {
-                    Code = "2",
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
-                .Returns(new ValueTask<Participant>(eventList[1]));
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "2",
-                }
-            };
+            var participants = CreateParticipants();
+            SetUpMocks(participants, participants[1], 1);
+            var command = CreateCommand("2");
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -136,32 +79,9 @@ namespace Tests.Application.Participants
         public async Task Handle_EventFound_ShouldSaveChanges()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Code = "1",
-                },
-                new Company
-                {
-                    Code = "2",
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
-                .Returns(new ValueTask<Participant>(eventList[1]));
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "2",
-                }
-            };
+            var participants = CreateParticipants();
+            SetUpMocks(participants, participants[1], 1);
+            var command = CreateCommand("2");
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -174,32 +94,9 @@ namespace Tests.Application.Participants
         public async Task Handle_ChangesSaved_ShouldReturnSuccess()
         {
             //Arrange
-            var eventList = new List<Participant>
-            {
-                new Company
-                {
-                    Code = "1",
-                },
-                new Company
-                {
-                    Code = "2",
-                },
-            };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
-                .Returns(new ValueTask<Participant>(eventList[1]));
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(1));
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "2",
-                }
-            };
+            var participants = CreateParticipants();
+            SetUpMocks(participants, participants[1], 1);
+            var command = CreateCommand("2");
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
@@ -213,7 +110,47 @@ namespace Tests.Application.Participants
         public async Task Handle_ChangesNotSaved_ShouldReturnFailure()
         {
             //Arrange
-            var eventList = new List<Participant>
+            var participants = CreateParticipants();
+            SetUpMocks(participants, participants[1], -1);
+            var command = CreateCommand("2");
+
+            //Act
+            var actual = await _subject.Handle(command, new CancellationToken());
+
+            //Assert
+            Assert.False(actual.IsSuccess);
+            Assert.False(string.IsNullOrWhiteSpace(actual.Error));
+        }
+
+        private Edit.Command CreateCommand(string code)
+        {
+            return new Edit.Command
+            {
+                Participant = new Company
+                {
+                    Code = code,
+                }
+            };
+        }
+
+        private Mock<DbSet<Participant>> SetUpMocks(
+            IList<Participant> participants,
+            Participant found,
+            int saveResult)
+        {
+            var participantSet = participants.AsQueryable().BuildMockDbSet();
+            _ = participantSet.Setup(e => e.FindAsync(It.IsAny<string>()))
+                .Returns(new ValueTask<Participant>(found));
+            _dataContext.SetupGet(e => e.Participants).Returns(participantSet.Object);
+            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(saveResult));
+
+            return participantSet;
+        }
+
+        private IList<Participant> CreateParticipants()
+        {
+            return new List<Participant>
             {
                 new Company
                 {
@@ -224,29 +161,8 @@ namespace Tests.Application.Participants
                     Code = "2",
                 },
             };
-
-            var eventSet = eventList.AsQueryable().BuildMockDbSet();
-            _ = eventSet.Setup(e => e.FindAsync(It.IsAny<string>()))
-                .Returns(new ValueTask<Participant>(eventList[1]));
-            _dataContext.SetupGet(e => e.Participants).Returns(eventSet.Object);
-            _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(-1));
-
-            var command = new Edit.Command
-            {
-                Participant = new Company
-                {
-                    Code = "2",
-                }
-            };
-
-            //Act
-            var actual = await _subject.Handle(command, new CancellationToken());
-
-            //Assert
-            Assert.False(actual.IsSuccess);
-            Assert.False(string.IsNullOrWhiteSpace(actual.Error));
         }
+
     }
 }
 

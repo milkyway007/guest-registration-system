@@ -1,6 +1,6 @@
 ﻿using Application.Addresses.Commands;
+using Application.Interfaces.Core;
 using Domain.Entities;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -18,12 +18,16 @@ namespace Tests.Application.Addresses
     {
         private Create.Handler _subject;
         private Mock<IDataContext> _dataContext;
+        private Mock<IEntityFrameworkQueryableExtensionsAbstraction> _eFExtensionsAbstraction;
 
         [SetUp]
         public void SetUp()
         {
             _dataContext = new Mock<IDataContext>();
-            _subject = new Create.Handler(_dataContext.Object);
+            _eFExtensionsAbstraction = new Mock<IEntityFrameworkQueryableExtensionsAbstraction>();
+            _subject = new Create.Handler(
+                _dataContext.Object,
+                _eFExtensionsAbstraction.Object);
         }
 
         [Test]
@@ -38,7 +42,8 @@ namespace Tests.Application.Addresses
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            addressSet.Verify(x => x.Add(It.IsAny<Address>()), Times.Once);
+            _eFExtensionsAbstraction.Verify(x => x.AddAsync(It.IsAny<Address>(), It.IsAny<DbSet<Address>>()),
+                Times.Once);
         }
 
         [Test]
@@ -105,6 +110,9 @@ namespace Tests.Application.Addresses
             _dataContext.SetupGet(e => e.Addresses).Returns(addressSet.Object);
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(saveResult));
+
+            _eFExtensionsAbstraction.Setup(x => x.AddAsync(It.IsAny<Address>(), It.IsAny<DbSet<Address>>()))
+            .Returns(Task.FromResult((Address) null));
 
             return addressSet;
         }

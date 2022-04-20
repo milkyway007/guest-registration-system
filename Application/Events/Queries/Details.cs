@@ -1,6 +1,5 @@
 ﻿using Application.Core;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Persistence.Interfaces;
 

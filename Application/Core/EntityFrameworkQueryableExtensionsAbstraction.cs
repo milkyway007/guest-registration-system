@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces.Core;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Interfaces;
 
 namespace Application.Core
 {

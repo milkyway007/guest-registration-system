@@ -1,6 +1,4 @@
-﻿using Application.Events.Dtos;
-
-namespace Application.Core
+﻿namespace Application.Core
 {
     public class Result<T>
     {
@@ -13,10 +11,5 @@ namespace Application.Core
 
         public static Result<T> Failure(string error) =>
             new Result<T> { IsSuccess = false, Error = error };
-
-        internal static Result<List<CompanyDto>> Success(object v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -9,15 +9,87 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Remove="node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="StaticFiles\assets\scripts\node_modules\.package-lock.json" />
+    <Content Include="StaticFiles\assets\scripts\node_modules\axios\package.json" />
+    <Content Include="StaticFiles\assets\scripts\node_modules\axios\tsconfig.json" />
+    <Content Include="StaticFiles\assets\scripts\node_modules\axios\tslint.json" />
+    <Content Include="StaticFiles\assets\scripts\node_modules\follow-redirects\package.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.3" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.6.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\CHANGELOG.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.map" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.min.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.min.map" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\index.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\adapters\http.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\adapters\README.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\adapters\xhr.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\axios.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\cancel\Cancel.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\cancel\CancelToken.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\cancel\isCancel.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\Axios.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\buildFullPath.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\createError.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\dispatchRequest.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\enhanceError.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\InterceptorManager.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\mergeConfig.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\README.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\settle.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\core\transformData.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\defaults\index.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\defaults\transitional.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\env\data.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\env\README.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\bind.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\buildURL.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\combineURLs.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\cookies.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\deprecatedMethod.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\isAbsoluteURL.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\isAxiosError.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\isURLSameOrigin.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\normalizeHeaderName.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\parseHeaders.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\README.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\spread.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\toFormData.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\helpers\validator.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\lib\utils.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\LICENSE" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\README.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\SECURITY.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\axios\UPGRADE_GUIDE.md" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\debug.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\http.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\https.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\index.js" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\LICENSE" />
+    <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\README.md" />
   </ItemGroup>
 
   <ItemGroup>

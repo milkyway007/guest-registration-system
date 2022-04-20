@@ -1,4 +1,5 @@
 ﻿using Application.Events.Commands;
+using Application.Events.Dtos;
 using Application.Events.Queries;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +9,9 @@ namespace API.Controllers
     public class EventsController : BaseApiController
     {
         [HttpGet]
-        public async Task<IActionResult> GetEvents()
+        public async Task<IActionResult> GetEvents(string predicate)
         {
-            return HandleResult(await Mediator.Send(new List.Query()));
+            return HandleResult(await Mediator.Send(new List.Query { Predicate = predicate }));
         }
 
         [HttpGet("{id}")]
@@ -24,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateEvent(Event e)
+        public async Task<IActionResult> CreateEvent(EventDto e)
         {
             return HandleResult(await Mediator.Send(
                 new Create.Command

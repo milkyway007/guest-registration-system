@@ -3,36 +3,48 @@ using Microsoft.EntityFrameworkCore;
 using API.Extensions;
 using API.Middleware;
 using FluentValidation.AspNetCore;
-using static Application.Events.Commands.Create;
 using Application.Events.Commands;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers().AddFluentValidation(config =>
-{
-    config.RegisterValidatorsFromAssemblyContaining<Create>();
-}
-);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    )
+    .AddFluentValidation(config =>
+    {
+        config.RegisterValidatorsFromAssemblyContaining<Create>();
+    }
+    );
 builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), API.Constants.STATIC_FILES)),
+    RequestPath = "/staticfiles",
+    EnableDefaultFiles = true
+});
 
-app.UseHttpsRedirection();
-
+//app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors(API.Constants.CORS_POLICY);
 app.UseAuthorization();
-
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 using var scope = app.Services.CreateScope();
 

@@ -38,11 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Persistence\Persistence.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="StaticFiles\assets\scripts\node_modules\axios\CHANGELOG.md" />
     <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.js" />
     <None Include="StaticFiles\assets\scripts\node_modules\axios\dist\axios.map" />
@@ -95,6 +90,11 @@
     <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\index.js" />
     <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\LICENSE" />
     <None Include="StaticFiles\assets\scripts\node_modules\follow-redirects\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
   </ItemGroup>
 
 </Project>

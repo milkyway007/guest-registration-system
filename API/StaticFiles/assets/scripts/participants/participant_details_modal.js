@@ -324,13 +324,13 @@ const clearParticipantInput = () => {
   personLastNameInput.value = "";
   personCodeInput.value = "";
   personPaymentMethodSelectContainer.value = "";
-  personPaymentMethodSelect.value = "";
+  personPaymentMethodSelect.value = "Vali";
   personDescription.value = "";
   companyNameInput.value = "";
   companyCodeInput.value = "";
   companyParticipantCountInput.value = "";
   companyPaymentMethodSelectContainer.value = "";
-  companyPaymentMethodSelect.value = "";
+  companyPaymentMethodSelect.value = "Vali";
   companyDescription.value = "";
 };
 

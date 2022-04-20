@@ -43,7 +43,7 @@ LastName
 
 Name
 
-####participants
+#### participants
 
 Code
 
@@ -51,9 +51,7 @@ Code
 
 EventId
 
-####Participant
-
-Code
+ParticipantCode
 
 PaymentMethod
 

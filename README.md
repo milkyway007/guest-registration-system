@@ -33,21 +33,30 @@ Oleks võimalik lisada kaks klassifikaatortabelit: payment_methods ja countries.
 
 Teistmoodi pidi organiseerima osalejate kohta käivaid tabeleid, nt:
 
-persons
+#### persons
+
 FirstName
+
 LastName
 
-companies
+#### companies
+
 Name
 
-participants
+####participants
+
 Code
 
-event_participants
+#### event_participants
+
 EventId
+
 ParticipantCode
+
 PaymentMethod
+
 ParticipantCount
+
 Description
 
 ## Persistence

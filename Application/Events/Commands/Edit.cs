@@ -1,4 +1,5 @@
-﻿using Application.Core;
+﻿using Application.Addresses.Validators;
+using Application.Core;
 using Application.Events.Validators;
 using AutoMapper;
 using Domain.Entities;
@@ -20,6 +21,7 @@ namespace Application.Events.Commands
             public CommandValidator()
             {
                 RuleFor(x => x.Event).SetValidator(new EventValidator());
+                RuleFor(x => x.Event.Address).SetValidator(new AddressValidator());
             }
         }
 

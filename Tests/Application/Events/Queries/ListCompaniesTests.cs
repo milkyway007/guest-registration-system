@@ -45,8 +45,9 @@ namespace Tests.Application.Events
         {
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
+            var eventList = CreateEventList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, new List<CompanyDto>(), _ => { });
+            SetUpMocks(companyDtoList, eventList, eventParticipantList, new List<CompanyDto>(), _ => { });
             var query = CreateQuery();
 
             //Act
@@ -62,8 +63,9 @@ namespace Tests.Application.Events
         {
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
+            var eventList = CreateEventList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, new List<CompanyDto>(), _ => { });
+            SetUpMocks(companyDtoList, eventList, eventParticipantList, new List<CompanyDto>(), _ => { });
             var query = CreateQuery();
             
             //Act
@@ -71,7 +73,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsEmpty(actual.Value);
+            Assert.IsEmpty(actual.Value.Participants);
         }
 
         [Test]
@@ -79,8 +81,9 @@ namespace Tests.Application.Events
         {
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
+            var eventList = CreateEventList();
             var eventParticipantList = new List<EventParticipant>();
-            SetUpMocks(companyDtoList, eventParticipantList, companyDtoList.ToList(), _ => { });
+            SetUpMocks(companyDtoList, eventList, eventParticipantList, companyDtoList.ToList(), _ => { });
             var query = CreateQuery();
 
             //Act
@@ -88,7 +91,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<List<CompanyDto>>(actual.Value);
+            Assert.IsInstanceOf<CompanyListDto>(actual.Value);
         }
 
         [Test]
@@ -96,9 +99,10 @@ namespace Tests.Application.Events
         {
             //Arrange
             var companyDtoList = CreateCompanyDtoList();
+            var eventList = CreateEventList();
             var eventParticipantList = new List<EventParticipant>();
             SetUpMocks(
-                companyDtoList,
+                companyDtoList, eventList,
                 eventParticipantList,
                 companyDtoList.ToList(),
                 e => VerifyAreSorted(e, x => x.Name));
@@ -148,14 +152,30 @@ namespace Tests.Application.Events
             };
         }
 
+        private IList<Event> CreateEventList()
+        {
+            return new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Name = "Fake event",
+                },
+            };
+        }
+
         private void SetUpMocks(
             IList<CompanyDto> companyDtoList,
+            IList<Event> eventList,
             IList<EventParticipant> eventParticipantList,
             List<CompanyDto> listed,
             Action<IEnumerable<CompanyDto>> callback)
         {
             var eventParticipantSet = eventParticipantList.AsQueryable().BuildMockDbSet();
+            var eventSet = eventList.AsQueryable().BuildMockDbSet();
+            eventSet.Setup(x => x.FindAsync(It.IsAny<int>())).Returns(new ValueTask<Event>(eventList[0]));
             _dataContext.SetupGet(e => e.EventParticipants).Returns(eventParticipantSet.Object);
+            _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
             _extensionsAbstraction.Setup(x => x.ProjectTo(
                 It.IsAny<IQueryable>(),
                 It.IsAny<IConfigurationProvider>(),

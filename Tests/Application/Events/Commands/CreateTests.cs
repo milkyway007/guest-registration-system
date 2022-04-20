@@ -1,6 +1,8 @@
 ﻿using Application.Events.Commands;
+using Application.Events.Dtos;
+using Application.Interfaces.Core;
+using AutoMapper;
 using Domain.Entities;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;
 using Moq;
@@ -18,12 +20,20 @@ namespace Tests.Application.Events
     {
         private Create.Handler _subject;
         private Mock<IDataContext> _dataContext;
+        private Mock<IMapper> _mapper;
+        private Mock<IEntityFrameworkQueryableExtensionsAbstraction> _eFExtensionsAbstraction;
 
         [SetUp]
         public void SetUp()
         {
             _dataContext = new Mock<IDataContext>();
-            _subject = new Create.Handler(_dataContext.Object);
+            _mapper = new Mock<IMapper>();
+            _eFExtensionsAbstraction = new Mock<IEntityFrameworkQueryableExtensionsAbstraction>();
+            _subject = new Create.Handler(
+                _dataContext.Object,
+                _mapper.Object,
+                _eFExtensionsAbstraction.Object
+                );
         }
 
         [Test]
@@ -31,14 +41,15 @@ namespace Tests.Application.Events
         {
             //Arrange
             var eventList = CreateEventList();
-            var eventSet = SetUpMocks(eventList, 1);
+            var addressesList = CreateAddressList();
+            var eventSet = SetUpMocks(eventList, addressesList, 1);
             var command = CreateCommand();
 
             //Act
             var actual = await _subject.Handle(command, new CancellationToken());
 
             //Assert
-            eventSet.Verify(x => x.Add(It.IsAny<Event>()), Times.Once);
+            _eFExtensionsAbstraction.Verify(x => x.AddAsync(It.IsAny<Event>(), It.IsAny<DbSet<Event>>()), Times.Once);
         }
 
         [Test]
@@ -46,7 +57,8 @@ namespace Tests.Application.Events
         {
             //Arrange
             var eventList = CreateEventList();
-            var eventSet = SetUpMocks(eventList, 1);
+            var addressesList = CreateAddressList();
+            var eventSet = SetUpMocks(eventList, addressesList, 1);
             var command = CreateCommand();
 
             //Act
@@ -61,7 +73,8 @@ namespace Tests.Application.Events
         {
             //Arrange
             var eventList = CreateEventList();
-            SetUpMocks(eventList, 1);
+            var addressesList = CreateAddressList();
+            SetUpMocks(eventList, addressesList, 1);
             var command = CreateCommand();
 
             //Act
@@ -69,7 +82,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<Unit>(actual.Value);
+            Assert.IsInstanceOf<Event>(actual.Value);
         }
 
         [Test]
@@ -77,7 +90,8 @@ namespace Tests.Application.Events
         {
             //Arrange
             var eventList = CreateEventList();
-            SetUpMocks(eventList, -1);
+            var addressesList = CreateAddressList();
+            var eventSet = SetUpMocks(eventList, addressesList, -1);
             var command = CreateCommand();
 
             //Act
@@ -99,10 +113,30 @@ namespace Tests.Application.Events
             };
         }
 
-        private Mock<DbSet<Event>> SetUpMocks(IList<Event> eventList, int saveResult)
+        private IList<Address> CreateAddressList()
+        {
+            return new List<Address>
+            {
+                new Address
+                {
+                    Zip = "1",
+                },
+            };
+        }
+
+        private Mock<DbSet<Event>> SetUpMocks(
+            IList<Event> eventList,
+            IList<Address> addressList,
+            int saveResult)
         {
             var eventSet = eventList.AsQueryable().BuildMockDbSet();
             _dataContext.SetupGet(e => e.Events).Returns(eventSet.Object);
+
+            var addressSet = addressList.AsQueryable().BuildMockDbSet();
+            addressSet.Setup(x => x.FindAsync(It.IsAny<string>()))
+                .Returns(new ValueTask<Address>(addressList[0]));
+            _dataContext.SetupGet(e => e.Addresses).Returns(addressSet.Object);
+
             _dataContext.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(saveResult));
 
@@ -113,7 +147,7 @@ namespace Tests.Application.Events
         {
             return new Create.Command
             {
-                Event = new Event
+                Event = new EventDto
                 {
                     Id = 2,
                 }

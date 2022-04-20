@@ -24,7 +24,7 @@ namespace Tests.Application.Events
         public void SetUp()
         {
             _dataContext = new Mock<IDataContext>();
-            _subject = new Delete.Handler(_dataContext.Object, new Mock<IValidator<Delete.Command>>().Object);
+            _subject = new Delete.Handler(_dataContext.Object);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace Tests.Application.Events
         {
             //Arrange
             var eventList = CreateEventList();
-            var eventSet = SetUpMocks(eventList, eventList[1], 1);
+            SetUpMocks(eventList, eventList[1], 1);
             var command = CreateCommand();
 
             //Act
@@ -100,7 +100,7 @@ namespace Tests.Application.Events
 
             //Assert
             Assert.True(actual.IsSuccess);
-            Assert.IsInstanceOf<Unit>(actual.Value);
+            Assert.IsInstanceOf<int>(actual.Value);
         }
 
         [Test]

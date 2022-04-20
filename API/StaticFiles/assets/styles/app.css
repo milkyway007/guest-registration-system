@@ -3,7 +3,7 @@
 }
 
 .navbar-item img {
-  max-height: 3.0rem;
+  max-height: 3rem;
 }
 
 #event-list {
@@ -14,7 +14,7 @@
   border-top: 1px solid hsl(0, 0%, 86%);
 }
 
-#event-list li{
+#event-list li {
   margin: 0;
   padding: 1rem 0 3rem 0;
   border-bottom: 1px solid hsl(0, 0%, 86%);
@@ -43,28 +43,8 @@
   display: none;
 }
 
-.modal.is-active {
-  animation: fade-slide-in 0.3s ease-out forwards;
-}
-
 .modal .field {
   margin-right: 1rem;
-}
-
-#backdrop {
-  position: fixed;
-  width: 100%;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 100;
-  pointer-events: none;
-  display: none;
-}
-
-#backdrop.is-block {
-  pointer-events: all;
 }
 
 #address-zip-validation,
@@ -86,11 +66,11 @@
 }
 
 #event-title {
-  margin: 2rem 0 0 0;
+  margin: 0 0 0 0;
 }
 
 #event-subtitle {
-  margin: 0 0 2rem 0;
+  margin: 0 0 0 0;
 }
 
 .no-margin {
@@ -111,7 +91,7 @@ span .text-centered-vertically {
   border-top: 1px solid hsl(0, 0%, 86%);
 }
 
-#participant-list li{
+#participant-list li {
   margin: 0;
   padding: 0.5rem 0 1.5rem 0;
   border-bottom: 1px solid hsl(0, 0%, 86%);
@@ -123,4 +103,12 @@ span .text-centered-vertically {
 
 .link:hover {
   color: hsl(217, 71%, 53%) !important;
+}
+
+.warning {
+  z-index: 300;
+}
+
+.transparent {
+  opacity: 0;
 }

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" class="is-family-sans-serif has-text-grey-darker">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Events</title>
+    <link rel="stylesheet" href="assets/styles/bulma/css/bulma.min.css" />
+    <link rel="stylesheet" href="assets/styles/app.css" />
+    <link
+      href="assets/styles/fontawesome-free-6.1.1-web/fontawesome-free-6.1.1-web/css/all.css"
+      rel="stylesheet"
+    />
+    <script src="assets/scripts/node_modules/axios/dist/axios.min.js"></script>
+    <script src="assets/scripts/utils.js"></script>
+    <script src="assets/scripts/constants.js"></script>
+    <script src="assets/scripts/date.js"></script>
+    <script src="assets/scripts/participants.js" type="module"></script>
+  </head>
+  <body>
+    <div class="modal warning">
+      <div class="modal-background backdrop"></div>
+      <div class="modal-card">
+        <article class="message is-danger">
+          <div class="message-header">
+            <p>Miski läks valesti</p>
+            <button class="delete"></button>
+          </div>
+          <div class="message-body"></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="modal participant-details-modal">
+      <div class="modal-background backdrop"></div>
+      <div class="modal-card">
+        <header class="modal-card-head has-background-white">
+          <p class="modal-card-title">Osaleja</p>
+        </header>
+        <section class="modal-card-body">
+          <nav class="breadcrumb is-medium is-hidden">
+            <ul>
+              <li class="person-link-container">
+                <a onclick="showPersonForm()" href="#" class="person-link"
+                  >Eraisik</a
+                >
+              </li>
+              <li class="company-link-container">
+                <a onclick="showCompanyForm()" href="#" class="company-link"
+                  >Ettevõte</a
+                >
+              </li>
+            </ul>
+          </nav>
+          <div class="person-form">
+            <form action="">
+              <div class="field">
+                <label class="label">Eesnimi</label>
+                <div class="control">
+                  <input
+                    class="input person-firstname-input"
+                    type="text"
+                    maxlength="50"
+                  />
+                </div>
+                <p class="help is-danger person-firstname-validation">
+                  Sisesta eesnimi
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Perekonnanimi</label>
+                <div class="control">
+                  <input
+                    class="input person-lastname-input"
+                    type="text"
+                    maxlength="50"
+                  />
+                </div>
+                <p class="help is-danger person-lastname-validation">
+                  Sisesta perekonnanimi
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Isikukood</label>
+                <div class="control">
+                  <input
+                    class="input person-code-input"
+                    type="text"
+                    maxlength="50"
+                  />
+                </div>
+                <p class="help is-danger person-code-validation">
+                  Sisesta isikukood
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Maksmise viis</label>
+                <div class="select person-payment-method-select-container">
+                  <select class="person-payment-method-select">
+                    <option>Vali</option>
+                  </select>
+                </div>
+                <p class="help is-danger person-payment-method-validation">
+                  Vali maksmise viis
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Lisainfo</label>
+                <div class="control">
+                  <textarea
+                    class="textarea person-description-textarea"
+                    maxlength="1500"
+                  ></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="company-form">
+            <form action="">
+              <div class="field">
+                <label class="label">Juriidiline nimi</label>
+                <div class="control">
+                  <input
+                    class="input company-name-input"
+                    type="text"
+                    maxlength="50"
+                  />
+                </div>
+                <p class="help is-danger company-name-validation">
+                  Sisesta nimi
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Registrikood</label>
+                <div class="control">
+                  <input
+                    class="input company-code-input"
+                    type="text"
+                    maxlength="50"
+                  />
+                </div>
+                <p class="help is-danger company-code-validation">
+                  Sisesta registrikood
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Osavõtjate arv</label>
+                <div class="control">
+                  <input
+                    class="input company-participant-count-input"
+                    type="number"
+                    min="1"
+                  />
+                </div>
+                <p class="help is-danger company-participant-count-validation">
+                  Osalejate arv peab olema vähemalt üks
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Maksmise viis</label>
+                <div class="select company-payment-method-select-container">
+                  <select class="company-payment-method-select">
+                    <option>Vali</option>
+                  </select>
+                </div>
+                <p class="help is-danger company-payment-method-validation">
+                  Vali maksmise viis
+                </p>
+              </div>
+
+              <div class="field">
+                <label class="label">Lisainfo</label>
+                <div class="control">
+                  <textarea
+                    class="textarea company-description-textarea"
+                    maxlength="5000"
+                  ></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+        <footer class="modal-card-foot has-background-white">
+          <button
+            class="button is-normal"
+            id="close-participants-details-button"
+          >
+            Sule
+          </button>
+          <button
+            class="button is-normal is-hidden"
+            id="cancel-modify-participant-button"
+          >
+            Tühista
+          </button>
+          <button
+            class="button is-link is-normal"
+            id="start-modify-participant-button"
+          >
+            Muuda
+          </button>
+          <button
+            class="button is-link is-normal is-hidden"
+            id="save-participant-button"
+          >
+            Salvesta
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="modal" id="delete-participant-modal">
+      <div class="modal-background backdrop"></div>
+      <div class="modal-card">
+        <header class="modal-card-head has-background-white">
+          <p class="modal-card-title">Kas oled kindel?</p>
+        </header>
+        <section class="modal-card-body">
+          <p>
+            Kas oled kidel, et soovid osaleja ära kustutada? Pärast kustutamist
+            andmeid ei ole võimalik enam taastada.
+          </p>
+        </section>
+        <footer class="modal-card-foot has-background-white">
+          <button
+            class="button is-normal"
+            id="cancel-delete-participant-button"
+          >
+            Tühista
+          </button>
+          <button
+            class="button is-link is-normal"
+            id="delete-participant-button"
+          >
+            Kustuta
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <nav class="navbar" role="navigation" id="main-nav">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="index.html">
+          <img src="images/registration-logo.png" />
+        </a>
+      </div>
+      <div class="navbar-start">
+        <div class="navbar-item">
+          <a class="navbar-item is-size-5" href="index.html"
+            ><strong>Ürituste lehele</strong>
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="section">
+      <p class="title is-3" id="event-title"></p>
+      <nav class="breadcrumb is-medium">
+        <ul>
+          <li
+            class="has-text-grey-dark is-size-5 is-active"
+            id="event-person-link-container"
+          >
+            <a href="#" id="event-person-link">Eraisikud</a>
+          </li>
+          <li
+            class="has-text-grey-dark is-size-5"
+            id="event-company-link-container"
+          >
+            <a href="#" id="event-company-link">Ettevõtted</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="columns">
+      <div class="column is-two-thirds">
+        <ul id="participant-list"></ul>
+      </div>
+    </div>
+  </body>
+</html>

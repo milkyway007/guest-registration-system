@@ -1,7 +1,5 @@
 ﻿using Domain.Entities;
 using FluentValidation;
-using Persistence;
-using Persistence.Interfaces;
 
 namespace Application.Events.Validators
 {

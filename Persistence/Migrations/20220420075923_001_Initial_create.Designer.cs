@@ -11,8 +11,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220413002238_002_Remove_IsPerson_Participant")]
-    partial class _002_Remove_IsPerson_Participant
+    [Migration("20220420075923_001_Initial_create")]
+    partial class _001_Initial_create
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,7 @@ namespace Persistence.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("State")
-                        .HasMaxLength(250)
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Zip");

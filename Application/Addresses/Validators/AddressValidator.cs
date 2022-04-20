@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using FluentValidation;
-using Persistence.Interfaces;
 
 namespace Application.Addresses.Validators
 {

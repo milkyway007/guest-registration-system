@@ -12,12 +12,12 @@ namespace Application.Events.Queries
 {
     public class ListPersons
     {
-        public class Query : IRequest<Result<List<PersonDto>>>
+        public class Query : IRequest<Result<PersonListDto>>
         {
             public int EventId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<List<PersonDto>>>
+        public class Handler : IRequestHandler<Query, Result<PersonListDto>>
         {
             private readonly IDataContext _context;
             private readonly IMapper _mapper;
@@ -36,9 +36,15 @@ namespace Application.Events.Queries
                 _extensionsAbstraction = extensionsAbstraction;
             }
 
-            public async Task<Result<List<PersonDto>>> Handle(
+            public async Task<Result<PersonListDto>> Handle(
                 Query request, CancellationToken cancellationToken)
             {
+                var e = await _context.Events.FindAsync(request.EventId);
+                if (e == null)
+                {
+                    return null;
+                }
+
                 var personQuery = _context.EventParticipants.Where(x => x.Event.Id == request.EventId)
                     .Include(x => x.Participant).Select(x => x.Participant).OfType<Person>();
 
@@ -50,9 +56,13 @@ namespace Application.Events.Queries
 
                 personDtoList.ForEach(x => x.EventId = request.EventId);
 
-                return Result<List<PersonDto>>.Success
+                return Result<PersonListDto>.Success
                     (
-                        personDtoList
+                        new PersonListDto
+                        {
+                            EventName = e.Name,
+                            Participants = personDtoList,
+                        }
                     );
             }
         }

@@ -12,12 +12,12 @@ namespace Application.Events.Queries
 {
     public class ListCompanies
     {
-        public class Query : IRequest<Result<List<CompanyDto>>>
+        public class Query : IRequest<Result<CompanyListDto>>
         {
             public int EventId { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Result<List<CompanyDto>>>
+        public class Handler : IRequestHandler<Query, Result<CompanyListDto>>
         {
             private readonly IDataContext _context;
             private readonly IMapper _mapper;
@@ -36,9 +36,15 @@ namespace Application.Events.Queries
                 _extensionsAbstraction = extensionsAbstraction;
             }
 
-            public async Task<Result<List<CompanyDto>>> Handle(
+            public async Task<Result<CompanyListDto>> Handle(
                 Query request, CancellationToken cancellationToken)
             {
+                var e = await _context.Events.FindAsync(request.EventId);
+                if (e == null)
+                {
+                    return null;
+                }
+
                 var companyQuery = _context.EventParticipants.Where(x => x.Event.Id == request.EventId)
                     .Include(x => x.Participant)
                     .Select(x => x.Participant).OfType<Company>();
@@ -51,9 +57,13 @@ namespace Application.Events.Queries
 
                 companyDtoList.ForEach(x => x.EventId = request.EventId);
 
-                return Result<List<CompanyDto>>.Success
+                return Result<CompanyListDto>.Success
                     (
-                        companyDtoList
+                        new CompanyListDto
+                        {
+                            EventName = e.Name,
+                            Participants = companyDtoList,
+                        }
                     );
             }
         }

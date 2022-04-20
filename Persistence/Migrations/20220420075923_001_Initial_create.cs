@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class _001_Initial_Create : Migration
+    public partial class _001_Initial_create : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,7 +17,7 @@ namespace Persistence.Migrations
                     Line1 = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     Line2 = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
                     City = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    State = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true),
+                    State = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
                     Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Modified = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -33,7 +33,6 @@ namespace Persistence.Migrations
                 {
                     Code = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PaymentMethod = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsPerson = table.Column<bool>(type: "INTEGER", nullable: false),
                     Created = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Modified = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },

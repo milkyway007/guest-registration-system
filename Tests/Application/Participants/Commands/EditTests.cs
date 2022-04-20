@@ -1,7 +1,6 @@
 ﻿using Application.Participants.Commands;
 using AutoMapper;
 using Domain.Entities;
-using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using MockQueryable.Moq;

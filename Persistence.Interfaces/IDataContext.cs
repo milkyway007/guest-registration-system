@@ -10,7 +10,6 @@ namespace Persistence.Interfaces
         DbSet<Participant> Participants { get; set; }
         DbSet<Event> Events { get; set; }
         DbSet<EventParticipant> EventParticipants { get; set; }
-
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry Remove(object entity);
     }

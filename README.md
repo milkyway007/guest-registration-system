@@ -106,3 +106,5 @@ Päringute saatmiseks on kasutusel Axios (kaust Requests). Failis agent.js proov
 
 CSS raamistikuna kasutasin Bulma-t. Valisin selle, kuna omasin sellega eelnevat kogemust. Mõned ikoonid on võetud Font Awesome raamatukogust.
 
+Puudujääk: minevikus toimunud ürituste puhul jäi võimalus kustutada ja muuta osalejaid.
+

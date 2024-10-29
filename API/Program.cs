@@ -41,10 +41,13 @@ app.UseFileServer(new FileServerOptions
 app.UseRouting();
 app.UseCors(API.Constants.CORS_POLICY);
 app.UseAuthorization();
+
+#pragma warning disable ASP0014
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
+#pragma warning restore ASP0014
 
 using var scope = app.Services.CreateScope();
 
